@@ -5,7 +5,7 @@ const ExpressError = require("../errorHandlers/expressError");
 /* ---------- User Class ---------- */
 
 class User {
-  constructor(
+  constructor({
     id,
     email,
     username,
@@ -20,8 +20,8 @@ class User {
     zipCode,
     phoneNumber = null,
     dateCreated,
-    dateDeleted = null
-  ) {
+    dateDeleted = null,
+  }) {
     this.id = id;
     this.email = email;
     this.username = username;
@@ -29,8 +29,8 @@ class User {
     this.firstName = firstName;
     this.lastName = lastName;
     this.isAdmin = isAdmin;
-    this.adress1 = address1;
-    this.adress2 = address2;
+    this.address1 = address1;
+    this.address2 = address2;
     this.city = city;
     this.state = state;
     this.zipCode = zipCode;
@@ -39,14 +39,30 @@ class User {
     this.dateDeleted = dateDeleted;
   }
 
-  /* ----- class method that returns all users ----- */
+  /* ----- returns an array of all users ----- */
   static async getAll() {
     const results = await db.query(
-      `SELECT first_name AS "firstName", last_name AS "lastName", username, email from users`
+      `SELECT first_name AS "firstName", last_name AS "lastName", username, email FROM users ORDER BY last_name`
     );
 
-    return results.rows;
+    return results.rows.map((userInfo) => new User(userInfo));
   }
+
+  /* ----- returns single user ----- */
+  static async getByUsername(username) {
+    const results = await db.query(
+      `SELECT id, email, username, first_name AS "firstName", last_name AS "lastName", is_admin AS "isAdmin", address_1 AS "address1", address_2 AS "address2", city, state, zip_code AS "zipCode", phone_number AS "phoneNumber", date_created AS "dateCreated", date_deleted AS "dateDeleted" FROM users WHERE username=$1`,
+      [username]
+    );
+
+    if (!results.rows[0]) {
+      throw new ExpressError(`Not Found: ${username}`, 404);
+    } else {
+      return new User(results.rows[0]);
+    }
+  }
+
+  /* ----- Creates a user ----- */
 }
 
 module.exports = User;

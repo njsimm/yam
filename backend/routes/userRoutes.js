@@ -17,4 +17,17 @@ router.get("/", async (req, res, next) => {
   }
 });
 
+/* ----- GET; user by username ----- */
+router.get("/:username", async (req, res, next) => {
+  try {
+    const { username } = req.params;
+    const user = await User.getByUsername(username);
+    return res.json({ user });
+  } catch (error) {
+    return next(error);
+  }
+});
+
+/* ----- POST; create a user ----- */
+
 module.exports = router;
