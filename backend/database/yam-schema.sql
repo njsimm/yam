@@ -11,7 +11,7 @@ CREATE TABLE users (
   city VARCHAR(50) NOT NULL,
   state VARCHAR(2) NOT NULL,
   zip_code VARCHAR(5) NOT NULL,
-  phone_number VARCHAR(11) NOT NULL,
+  phone_number VARCHAR(11),
   date_created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   date_deleted TIMESTAMP
 );

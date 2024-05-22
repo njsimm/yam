@@ -28,6 +28,41 @@ router.get("/:username", async (req, res, next) => {
   }
 });
 
-/* ----- POST; create a user ----- */
+/* ----- POST; register new user ----- */
+router.post("/register", async (req, res, next) => {
+  try {
+    const {
+      email,
+      username,
+      password,
+      firstName,
+      lastName,
+      address1,
+      address2,
+      city,
+      state,
+      zipCode,
+      phoneNumber,
+    } = req.body;
+
+    const user = await User.register({
+      email,
+      username,
+      password,
+      firstName,
+      lastName,
+      address1,
+      address2,
+      city,
+      state,
+      zipCode,
+      phoneNumber,
+    });
+
+    return res.status(201).json({ user });
+  } catch (error) {
+    return next(error);
+  }
+});
 
 module.exports = router;

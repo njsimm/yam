@@ -24,3 +24,5 @@ dist-ssr
 *.sw?
 
 yam-seed.sql
+.env
+fallbackVariables.js
