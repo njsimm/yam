@@ -3,7 +3,8 @@ const db = require("../database/db");
 const ExpressError = require("../errorHandlers/expressError");
 const bcrypt = require("bcrypt");
 const { BCRYPT_WORK_FACTOR } = require("../config/config");
-const { prepareUpdateQuery } = require("../helpers/functions");
+const { prepareUpdateQuery, createToken } = require("../helpers/functions");
+const jwt = require("jsonwebtoken");
 
 /* ---------- User Class ---------- */
 
@@ -47,7 +48,7 @@ class User {
    **/
   static async getAll() {
     const results = await db.query(
-      `SELECT first_name AS "firstName", last_name AS "lastName", username, email FROM users ORDER BY last_name`
+      `SELECT first_name AS "firstName", last_name AS "lastName", username, email, is_admin AS "isAdmin" FROM users ORDER BY last_name`
     );
 
     return results.rows.map((userInfo) => new User(userInfo));
@@ -61,7 +62,7 @@ class User {
    **/
   static async getByUsername(username) {
     const results = await db.query(
-      `SELECT id, email, username, first_name AS "firstName", last_name AS "lastName", address_1 AS "address1", address_2 AS "address2", city, state, zip_code AS "zipCode", phone_number AS "phoneNumber", date_created AS "dateCreated" FROM users WHERE username=$1`,
+      `SELECT id, email, username, first_name AS "firstName", last_name AS "lastName", address_1 AS "address1", address_2 AS "address2", city, state, zip_code AS "zipCode", phone_number AS "phoneNumber", date_created AS "dateCreated", is_admin AS "isAdmin" FROM users WHERE username=$1`,
       [username]
     );
 
@@ -74,7 +75,7 @@ class User {
 
   /** Register a new user with data.
    *
-   * Returns a new User instance.
+   * Returns a new User instance with key of "_token".
    *
    * The uniqueCheck method throws an ExpressError if the username or email is already taken.
    **/
@@ -98,7 +99,7 @@ class User {
     const hashedPassword = await bcrypt.hash(password, BCRYPT_WORK_FACTOR);
 
     const results = await db.query(
-      `INSERT INTO users (email, username, password, first_name, last_name, address_1, address_2, city, state, zip_code, phone_number) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING email, username, first_name AS "firstName", last_name AS "lastName", address_1 AS "address1", address_2 AS "address2", city, state, zip_code AS "zipCode", phone_number AS "phoneNumber", date_created AS "dateCreated"`,
+      `INSERT INTO users (email, username, password, first_name, last_name, address_1, address_2, city, state, zip_code, phone_number) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING email, username, first_name AS "firstName", last_name AS "lastName", address_1 AS "address1", address_2 AS "address2", city, state, zip_code AS "zipCode", phone_number AS "phoneNumber", date_created AS "dateCreated", is_admin AS "isAdmin"`,
       [
         email,
         username,
@@ -113,7 +114,11 @@ class User {
         phoneNumber,
       ]
     );
-    return new User(results.rows[0]);
+    const user = new User(results.rows[0]);
+    const token = createToken(user);
+    user._token = token;
+
+    return user;
   }
 
   /** Check for unique email or username.
@@ -128,6 +133,39 @@ class User {
 
     if (results.rows[0]) {
       throw new ExpressError(`${fieldStr} taken: ${inputVar}`, 409);
+    }
+  }
+
+  /** authenticate user with username, password.
+   *
+   * Returns user instance with key of "_token"
+   *
+   * Throws ExpressError if user not found or wrong password/username.
+   **/
+  static async authenticate(username, password) {
+    const results = await db.query(
+      `SELECT username, password FROM users WHERE username=$1`,
+      [username]
+    );
+    const user = results.rows[0];
+
+    if (!user) {
+      throw new ExpressError(`Username not found: ${username}`);
+    }
+
+    if (!(await bcrypt.compare(password, user.password))) {
+      throw new ExpressError("Incorrect username/password", 401);
+    } else {
+      const correctUser = await User.getByUsername(username);
+
+      // This is a safeguard to ensure password is not included in the response
+      delete correctUser.password;
+
+      const token = createToken(correctUser);
+
+      correctUser._token = token;
+
+      return correctUser;
     }
   }
 

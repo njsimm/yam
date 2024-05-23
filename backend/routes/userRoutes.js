@@ -1,6 +1,7 @@
 /* ---------- require/import dependencies that are needed ---------- */
 const express = require("express");
 const User = require("../models/userModel");
+const { ensureLoggedIn } = require("../middleware/auth");
 
 /* ---------- create needed instances ---------- */
 const router = new express.Router();
@@ -117,4 +118,19 @@ router.patch("/:username", async (req, res, next) => {
   }
 });
 
+/** POST;
+ *
+ * Login user and return user instance with verified JWT
+ *
+ * Authorization required: none
+ **/
+router.post("/login", async (req, res, next) => {
+  try {
+    const { username, password } = req.body;
+    const user = await User.authenticate(username, password);
+    return res.status(200).json({ user });
+  } catch (error) {
+    return next(error);
+  }
+});
 module.exports = router;

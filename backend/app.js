@@ -2,6 +2,7 @@
 const ExpressError = require("./errorHandlers/expressError");
 const express = require("express");
 const morgan = require("morgan");
+const { authenticateJWT } = require("./middleware/auth");
 
 /* ---------- require/import routes folders' contents ---------- */
 const userRoutes = require("./routes/userRoutes");
@@ -13,6 +14,7 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan("dev"));
+app.use(authenticateJWT);
 
 /* ---------- require/import routes ---------- */
 app.use("/users", userRoutes);
@@ -21,7 +23,7 @@ app.use("/users", userRoutes);
 
 /* ----- 404 Errors ----- */
 app.use((req, res, next) => {
-  return new ExpressError("Not Found", 404);
+  return next(new ExpressError("Not Found", 404));
 });
 
 /* ----- Generic Error Handler; anything unhandles reaches here ----- */

@@ -1,5 +1,7 @@
 /* ---------- require/import dependencies that are needed ---------- */
 const ExpressError = require("../errorHandlers/expressError");
+const jwt = require("jsonwebtoken");
+const { SECRET_KEY } = require("../config/config");
 
 /* ----- Functions ----- */
 
@@ -33,4 +35,28 @@ function prepareUpdateQuery(dataToUpdate, jsToSql) {
   };
 }
 
-module.exports = { prepareUpdateQuery };
+/**
+ * Helper function for creating a JSON Web Token (JWT).
+ *
+ * This function generates a JWT for a user, encoding their username and admin status.
+ *
+ * @param {Object} user - The user object containing user information.
+ * @param {string} user.username - The username of the user.
+ * @param {boolean} [user.isAdmin=false] - Indicates if the user has admin privileges.
+ *
+ * @returns {string} - A signed JWT containing the user's username and admin status.
+ *
+ * @example
+ * const user = { username: 'johnDoe', isAdmin: true };
+ * const token = createToken(user);
+ * // token => 'fsdfARJAERJEXx4rwekrweR@#$...'
+ */
+function createToken(user) {
+  const payload = {
+    username: user.username,
+    isAdmin: user.isAdmin || false,
+  };
+  return jwt.sign(payload, SECRET_KEY);
+}
+
+module.exports = { prepareUpdateQuery, createToken };
