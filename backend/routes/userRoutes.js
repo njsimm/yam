@@ -46,16 +46,16 @@ router.get("/:username", async (req, res, next) => {
  * Register/signup a new user
  *
  * Returns
- *    {user: {username, firstName, lastName, email, isAdmin}, _token }
+ *    {user: {username, firstName, lastName, email, isAdmin}, token }
  *
  * Authorization required: none
  **/
 router.post("/register", async (req, res, next) => {
   try {
     const user = await User.register(req.body);
-    const _token = createToken(user);
+    const token = createToken(user);
 
-    return res.status(201).json({ user, _token });
+    return res.status(201).json({ user, token });
   } catch (error) {
     return next(error);
   }
@@ -101,15 +101,15 @@ router.patch("/:username", async (req, res, next) => {
  * Login a user
  *
  * * Returns
- *    {user: {username, firstName, lastName, email, isAdmin}, _token }
+ *    {user: {username, firstName, lastName, email, isAdmin}, token }
  *
  * Authorization required: none
  **/
 router.post("/login", async (req, res, next) => {
   try {
     const user = await User.authenticate(req.body.username, req.body.password);
-    const _token = createToken(user);
-    return res.status(200).json({ user, _token });
+    const token = createToken(user);
+    return res.status(200).json({ user, token });
   } catch (error) {
     return next(error);
   }
