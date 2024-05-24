@@ -109,7 +109,7 @@ class User {
     );
 
     if (!results.rows[0]) {
-      throw new ExpressError(`Not Found: ${username}`, 404);
+      throw new ExpressError(`Username not found: ${username}`, 404);
     } else {
       return results.rows[0];
     }
