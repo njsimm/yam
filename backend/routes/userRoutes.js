@@ -1,6 +1,7 @@
 /* ---------- require/import dependencies that are needed ---------- */
 const express = require("express");
 const User = require("../models/userModel");
+const { createToken } = require("../helpers/functions");
 const { ensureLoggedIn } = require("../middleware/auth");
 
 /* ---------- create needed instances ---------- */
@@ -10,7 +11,8 @@ const router = new express.Router();
 
 /** GET;
  *
- * Returns all users.
+ * Returns an array of all users.
+ *    [ { username, first_name, last_name, email, is_admin }, etc ]
  *
  * Authorization required: none
  **/
@@ -25,14 +27,14 @@ router.get("/", async (req, res, next) => {
 
 /** GET;
  *
- * Returns a user by username
+ * Returns a user, searched by username.
+ *    { username, first_name, last_name, email, is_admin }
  *
  * Authorization required: none
  **/
 router.get("/:username", async (req, res, next) => {
   try {
-    const { username } = req.params;
-    const user = await User.getByUsername(username);
+    const user = await User.getByUsername(req.params.username);
     return res.json({ user });
   } catch (error) {
     return next(error);
@@ -41,41 +43,19 @@ router.get("/:username", async (req, res, next) => {
 
 /** POST;
  *
- * Registers and returns a new user.
+ * Register/signup a new user
+ *
+ * Returns
+ *    {user: {username, firstName, lastName, email, isAdmin}, _token }
  *
  * Authorization required: none
  **/
 router.post("/register", async (req, res, next) => {
   try {
-    const {
-      email,
-      username,
-      password,
-      firstName,
-      lastName,
-      address1,
-      address2,
-      city,
-      state,
-      zipCode,
-      phoneNumber,
-    } = req.body;
+    const user = await User.register(req.body);
+    const _token = createToken(user);
 
-    const user = await User.register({
-      email,
-      username,
-      password,
-      firstName,
-      lastName,
-      address1,
-      address2,
-      city,
-      state,
-      zipCode,
-      phoneNumber,
-    });
-
-    return res.status(201).json({ user });
+    return res.status(201).json({ user, _token });
   } catch (error) {
     return next(error);
   }
@@ -83,17 +63,17 @@ router.post("/register", async (req, res, next) => {
 
 /** DELETE;
  *
- * Deletes a user by username.
+ * Deletes a user given input of username.
+ *
+ * Returns { message: `${username} deleted.` }
  *
  * Authorization required: none
  **/
 router.delete("/:username", async (req, res, next) => {
   try {
-    const user = await User.getByUsername(req.params.username);
+    await User.delete(req.params.username);
 
-    await user.delete();
-
-    return res.status(200).json({ message: `${user.username} deleted.` });
+    return res.status(200).json({ message: `${req.params.username} deleted.` });
   } catch (error) {
     return next(error);
   }
@@ -101,18 +81,16 @@ router.delete("/:username", async (req, res, next) => {
 
 /** PATCH;
  *
- * Update a user's info by username
+ * Update a user's info given input of username
  *
- * Returns updated user instance
+ * Returns { username, firstName, lastName, email, isAdmin }
  *
  * Authorization required: none
  **/
 router.patch("/:username", async (req, res, next) => {
   try {
-    const { username } = req.params;
-    const user = await User.getByUsername(username);
-    const updatedUser = await user.update(username, req.body);
-    return res.status(200).json({ user: updatedUser });
+    const user = await User.update(req.params.username, req.body);
+    return res.status(200).json({ user });
   } catch (error) {
     return next(error);
   }
@@ -120,15 +98,18 @@ router.patch("/:username", async (req, res, next) => {
 
 /** POST;
  *
- * Login user and return user instance with verified JWT
+ * Login a user
+ *
+ * * Returns
+ *    {user: {username, firstName, lastName, email, isAdmin}, _token }
  *
  * Authorization required: none
  **/
 router.post("/login", async (req, res, next) => {
   try {
-    const { username, password } = req.body;
-    const user = await User.authenticate(username, password);
-    return res.status(200).json({ user });
+    const user = await User.authenticate(req.body.username, req.body.password);
+    const _token = createToken(user);
+    return res.status(200).json({ user, _token });
   } catch (error) {
     return next(error);
   }
