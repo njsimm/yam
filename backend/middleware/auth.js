@@ -63,4 +63,67 @@ function ensureLoggedIn(req, res, next) {
   }
 }
 
-module.exports = { authenticateJWT, ensureLoggedIn };
+/**
+ * Middleware to ensure a user is an admin when trying to access admin-protected routes.
+ *
+ * This middleware function checks if req.user is set from the authenticateJWT middleware function and if the user has admin privileges.
+ *
+ * If the user is not logged in (no req.user from authenticateJWT) or is not an admin (req.user.isAdmin is false), it throws an ExpressError with a 401 status code.
+ *
+ * If the user is an admin, it proceeds.
+ *
+ * @throws {ExpressError} - Throws an error if the user is not logged in or is not an admin.
+ *
+ * @example
+ * used in routes
+ * router.get('/admin/dashboard', ensureAdmin, (req, res, next) => {
+ *   // route handler code here
+ * });
+ */
+function ensureAdmin(req, res, next) {
+  try {
+    if (!req.user || !req.user.isAdmin)
+      throw new ExpressError("Unauthorized", 401);
+    return next();
+  } catch (error) {
+    return next(error);
+  }
+}
+
+/**
+ * Middleware to ensure the user is the correct user or an admin.
+ *
+ * This middleware function checks if req.user is set from the authenticateJWT middleware function, if the user is the owner of the account being accessed (by comparing req.params.username to req.user.username), or if the user has admin privileges.
+ *
+ * If the user is not logged in (no req.user from authenticateJWT), is not the correct user, and is not an admin, it throws an ExpressError with a 401 status code.
+ *
+ * If the user is the correct user or an admin, it proceeds.
+ *
+ * @throws {ExpressError} - Throws an error if the user is not logged in, is not the correct user, and is not an admin.
+ *
+ * @example
+ * used in routes
+ * router.patch('/users/:username', ensureCorrectUserOrAdmin, (req, res, next) => {
+ *   // route handler code here
+ * });
+ */
+function ensureCorrectUserOrAdmin(req, res, next) {
+  try {
+    if (
+      !req.user ||
+      (req.user.username !== req.params.username && !req.user.isAdmin)
+    ) {
+      throw new ExpressError("Unauthorized", 401);
+    }
+    return next();
+  } catch (error) {
+    return next(error);
+  }
+}
+
+module.exports = {
+  authenticateJWT,
+  ensureLoggedIn,
+  ensureAdmin,
+  ensureCorrectUserOrAdmin,
+};
