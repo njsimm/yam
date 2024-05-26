@@ -13,7 +13,7 @@ const ExpressError = require("../errorHandlers/expressError");
  *
  * If the token is provided and valid, it is stored in the payload
  *
- * The payload is stored on req.user (payload contains username and isAdmin)
+ * The payload is stored on req.user (payload contains id, username, and isAdmin)
  *
  *
  * If the token is not valid or missing, the request proceeds without throwing an error.

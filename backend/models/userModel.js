@@ -12,7 +12,7 @@ const { prepareUpdateQuery } = require("../helpers/functions");
 class User {
   /** Register/signup a new user
    *
-   * Returns { username, firstName, lastName, email, isAdmin }
+   * Returns { username, firstName, lastName, email, isAdmin, id }
    *
    * The uniqueCheck method throws an ExpressError if the username or email is already taken.
    **/
@@ -24,7 +24,7 @@ class User {
     const hashedPassword = await bcrypt.hash(password, BCRYPT_WORK_FACTOR);
 
     const results = await db.query(
-      `INSERT INTO users (email, username, password, first_name, last_name) VALUES ($1, $2, $3, $4, $5) RETURNING email, username, first_name AS "firstName", last_name AS "lastName", is_admin AS "isAdmin"`,
+      `INSERT INTO users (email, username, password, first_name, last_name) VALUES ($1, $2, $3, $4, $5) RETURNING email, username, first_name AS "firstName", last_name AS "lastName", is_admin AS "isAdmin", id`,
       [email, username, hashedPassword, firstName, lastName]
     );
     const user = results.rows[0];
@@ -34,13 +34,13 @@ class User {
 
   /** authenticate user with username, password.
    *
-   * Returns { username, first_name, last_name, email, is_admin }
+   * Returns { username, first_name, last_name, email, is_admin, id }
    *
    * Throws ExpressError if user not found or wrong password/username.
    **/
   static async authenticate(username, password) {
     const results = await db.query(
-      `SELECT username, password, email, first_name AS "firstName", last_name AS "lastName", is_admin AS "isAdmin" FROM users WHERE username=$1`,
+      `SELECT username, password, email, first_name AS "firstName", last_name AS "lastName", is_admin AS "isAdmin", id FROM users WHERE username=$1`,
       [username]
     );
     const user = results.rows[0];
@@ -61,12 +61,12 @@ class User {
 
   /** Get all users.
    *
-   * Returns [ { username, first_name, last_name, email, is_admin }, etc ]
+   * Returns [ { username, first_name, last_name, email, is_admin, id }, etc ]
    * Ordered by last_name
    **/
   static async getAll() {
     const results = await db.query(
-      `SELECT first_name AS "firstName", last_name AS "lastName", username, email, is_admin AS "isAdmin" FROM users ORDER BY last_name`
+      `SELECT first_name AS "firstName", last_name AS "lastName", username, email, is_admin AS "isAdmin", id FROM users ORDER BY last_name`
     );
 
     return results.rows;
@@ -74,13 +74,13 @@ class User {
 
   /** Get a user by username.
    *
-   * Returns { username, first_name, last_name, email, is_admin }
+   * Returns { username, first_name, last_name, email, is_admin, id }
    *
    * Throws ExpressError if user not found.
    **/
   static async getByUsername(username) {
     const results = await db.query(
-      `SELECT email, username, first_name AS "firstName", last_name AS "lastName", is_admin AS "isAdmin" FROM users WHERE username=$1`,
+      `SELECT email, username, first_name AS "firstName", last_name AS "lastName", is_admin AS "isAdmin", id FROM users WHERE username=$1`,
       [username]
     );
 
@@ -95,7 +95,7 @@ class User {
    *
    * This is a partial update and only changes the provided fields.
    *
-   * Returns { username, firstName, lastName, email, isAdmin }
+   * Returns { username, firstName, lastName, email, isAdmin, id }
    **/
   static async update(username, newData) {
     const user = await User.getByUsername(username);
@@ -123,7 +123,7 @@ class User {
 
     const usernameSanitizedIdx = "$" + (values.length + 1);
 
-    const sqlQuery = `UPDATE users SET ${setColumns} WHERE username = ${usernameSanitizedIdx} RETURNING username, email, first_name AS "firstName", last_name AS "lastName", is_admin AS "isAdmin"`;
+    const sqlQuery = `UPDATE users SET ${setColumns} WHERE username = ${usernameSanitizedIdx} RETURNING username, email, first_name AS "firstName", last_name AS "lastName", is_admin AS "isAdmin", id`;
 
     const results = await db.query(sqlQuery, [...values, username]);
 

@@ -19,7 +19,7 @@ const router = new express.Router();
  * Register/signup a new user
  *
  * Returns
- *    {user: {username, firstName, lastName, email, isAdmin}, token }
+ *    {user: {username, firstName, lastName, email, isAdmin, id}, token }
  *
  * Authorization required: none
  **/
@@ -45,7 +45,7 @@ router.post("/register", async (req, res, next) => {
  * Login a user
  *
  * * Returns
- *    {user: {username, firstName, lastName, email, isAdmin}, token }
+ *    {user: {username, firstName, lastName, email, isAdmin, id}, token }
  *
  * Authorization required: none
  **/
@@ -68,7 +68,7 @@ router.post("/login", async (req, res, next) => {
 /** GET;
  *
  * Returns an array of all users.
- *    [ { username, first_name, last_name, email, is_admin }, etc ]
+ *    [ { username, first_name, last_name, email, is_admin, id }, etc ]
  *
  * Authorization required: admin
  **/
@@ -84,7 +84,7 @@ router.get("/", ensureAdmin, async (req, res, next) => {
 /** GET;
  *
  * Returns a user, searched by username.
- *    { username, first_name, last_name, email, is_admin }
+ *    { username, first_name, last_name, email, is_admin, id }
  *
  * Authorization required: admin or same user as username
  **/
@@ -101,7 +101,10 @@ router.get("/:username", ensureCorrectUserOrAdmin, async (req, res, next) => {
  *
  * Update a user's info given input of username
  *
- * Returns { username, firstName, lastName, email, isAdmin }
+ * If username not change Returns { username, firstName, lastName, email, isAdmin, id }
+ *
+ * If username is changed, issue new JWT to reflect that and return:
+ *    {user: {username, firstName, lastName, email, isAdmin, id}, token }
  *
  * Authorization required: admin or same user as username
  **/
@@ -114,6 +117,12 @@ router.patch("/:username", ensureCorrectUserOrAdmin, async (req, res, next) => {
     }
 
     const user = await User.update(req.params.username, req.body);
+
+    if (req.body.username && req.body.username !== req.user.username) {
+      const updatedJWT = createToken(user);
+      return res.status(200).json({ user, token: updatedJWT });
+    }
+
     return res.status(200).json({ user });
   } catch (error) {
     return next(error);

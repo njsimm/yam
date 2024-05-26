@@ -6,6 +6,7 @@ const { authenticateJWT } = require("./middleware/auth");
 
 /* ---------- require/import routes folders' contents ---------- */
 const userRoutes = require("./routes/userRoutes");
+const productRoutes = require("./routes/productRoutes");
 
 /* ---------- create needed instances ---------- */
 const app = express();
@@ -18,6 +19,7 @@ app.use(authenticateJWT);
 
 /* ---------- require/import routes ---------- */
 app.use("/users", userRoutes);
+app.use("/products", productRoutes);
 
 /* ---------- Error Handlers ---------- */
 

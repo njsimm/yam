@@ -38,16 +38,17 @@ function prepareUpdateQuery(dataToUpdate, jsToSql) {
 /**
  * Helper function for creating a JSON Web Token (JWT).
  *
- * This function generates a JWT for a user, encoding their username and admin status.
+ * This function generates a JWT for a user, encoding their username, admin status, and id.
  *
  * @param {Object} user - The user object containing user information.
  * @param {string} user.username - The username of the user.
  * @param {boolean} [user.isAdmin=false] - Indicates if the user has admin privileges.
+ * @param {number} user.id - The id of the user.
  *
- * @returns {string} - A signed JWT containing the user's username and admin status.
+ * @returns {string} - A signed JWT containing the user's username, admin status, and id.
  *
  * @example
- * const user = { username: 'johnDoe', isAdmin: true };
+ * const user = { username: 'johnDoe', isAdmin: true, id: 1 };
  * const token = createToken(user);
  * // token => 'fsdfARJAERJEXx4rwekrweR@#$...'
  */
@@ -55,6 +56,7 @@ function createToken(user) {
   const payload = {
     username: user.username,
     isAdmin: user.isAdmin || false,
+    id: user.id,
   };
   return jwt.sign(payload, SECRET_KEY);
 }
