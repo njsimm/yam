@@ -1,8 +1,13 @@
 /* ---------- require/import dependencies that are needed ---------- */
 const express = require("express");
+const jsonschema = require("jsonschema");
 const User = require("../models/userModel");
 const { createToken } = require("../helpers/functions");
 const { ensureLoggedIn } = require("../middleware/auth");
+const userRegisterSchema = require("../schemas/userRegister.json");
+const userUpdateSchema = require("../schemas/userUpdate.json");
+const userLoginSchema = require("../schemas/userLogin.json");
+const ExpressError = require("../errorHandlers/expressError");
 
 /* ---------- create needed instances ---------- */
 const router = new express.Router();
@@ -52,6 +57,12 @@ router.get("/:username", async (req, res, next) => {
  **/
 router.post("/register", async (req, res, next) => {
   try {
+    const validator = jsonschema.validate(req.body, userRegisterSchema);
+    if (!validator.valid) {
+      const errors = validator.errors.map((error) => error.stack);
+      throw new ExpressError(errors, 400);
+    }
+
     const user = await User.register(req.body);
     const token = createToken(user);
 
@@ -89,6 +100,12 @@ router.delete("/:username", async (req, res, next) => {
  **/
 router.patch("/:username", async (req, res, next) => {
   try {
+    const validator = jsonschema.validate(req.body, userUpdateSchema);
+    if (!validator.valid) {
+      const errors = validator.errors.map((error) => error.stack);
+      throw new ExpressError(errors, 400);
+    }
+
     const user = await User.update(req.params.username, req.body);
     return res.status(200).json({ user });
   } catch (error) {
@@ -107,6 +124,12 @@ router.patch("/:username", async (req, res, next) => {
  **/
 router.post("/login", async (req, res, next) => {
   try {
+    const validator = jsonschema.validate(req.body, userLoginSchema);
+    if (!validator.valid) {
+      const errors = validator.errors.map((error) => error.stack);
+      throw new ExpressError(errors, 400);
+    }
+
     const user = await User.authenticate(req.body.username, req.body.password);
     const token = createToken(user);
     return res.status(200).json({ user, token });

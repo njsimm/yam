@@ -16,19 +16,7 @@ class User {
    *
    * The uniqueCheck method throws an ExpressError if the username or email is already taken.
    **/
-  static async register({
-    email,
-    username,
-    password,
-    firstName,
-    lastName,
-    address1,
-    address2,
-    city,
-    state,
-    zipCode,
-    phoneNumber,
-  }) {
+  static async register({ email, username, password, firstName, lastName }) {
     await User.uniqueCheck("username", username);
 
     await User.uniqueCheck("email", email);
@@ -36,20 +24,8 @@ class User {
     const hashedPassword = await bcrypt.hash(password, BCRYPT_WORK_FACTOR);
 
     const results = await db.query(
-      `INSERT INTO users (email, username, password, first_name, last_name, address_1, address_2, city, state, zip_code, phone_number) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING email, username, first_name AS "firstName", last_name AS "lastName", is_admin AS "isAdmin"`,
-      [
-        email,
-        username,
-        hashedPassword,
-        firstName,
-        lastName,
-        address1,
-        address2,
-        city,
-        state,
-        zipCode,
-        phoneNumber,
-      ]
+      `INSERT INTO users (email, username, password, first_name, last_name) VALUES ($1, $2, $3, $4, $5) RETURNING email, username, first_name AS "firstName", last_name AS "lastName", is_admin AS "isAdmin"`,
+      [email, username, hashedPassword, firstName, lastName]
     );
     const user = results.rows[0];
 
@@ -143,10 +119,6 @@ class User {
       firstName: "first_name",
       lastName: "last_name",
       isAdmin: "is_admin",
-      address1: "address_1",
-      address2: "address_2",
-      zipCode: "zip_code",
-      phoneNumber: "phone_number",
     });
 
     const usernameSanitizedIdx = "$" + (values.length + 1);
