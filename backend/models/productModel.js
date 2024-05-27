@@ -12,14 +12,14 @@ class Product {
    *
    * Returns {id, userId, name, description, price, cost, sku, minutesToMake, type, updatedAt, createdAt}
    *
-   * The uniqueCheck method throws an ExpressError if the name or sku is already taken.
+   * The uniqueCheck method throws an ExpressError if the name or sku is already taken by the same user.
    **/
   static async create(
     { name, description, price, cost, sku, minutesToMake, type },
     userId
   ) {
-    await Product.uniqueCheck("name", name);
-    await Product.uniqueCheck("sku", sku);
+    await Product.uniqueCheck("name", name, userId);
+    await Product.uniqueCheck("sku", sku, userId);
 
     const results = await db.query(
       `INSERT INTO products (user_id, name, description, price, cost, sku, minutes_to_make, type) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id, user_id AS "userId", name, description, price, cost, sku, minutes_to_make AS "minutesToMake", type, updated_at AS "updatedAt", created_at AS "createdAt"`,
@@ -33,12 +33,12 @@ class Product {
 
   /** Check for unique name or sku.
    *
-   * Throws ExpressError if the field value is not unique.
+   * Throws ExpressError if the field value is not unique for the user.
    **/
-  static async uniqueCheck(fieldStr, inputVar) {
+  static async uniqueCheck(fieldStr, inputVar, userId) {
     const results = await db.query(
-      `SELECT ${fieldStr} FROM products WHERE ${fieldStr}=$1`,
-      [inputVar]
+      `SELECT ${fieldStr} FROM products WHERE ${fieldStr}=$1 AND user_id=$2`,
+      [inputVar, userId]
     );
 
     if (results.rows[0]) {

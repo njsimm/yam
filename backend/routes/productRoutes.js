@@ -12,9 +12,9 @@ const productUpdateSchema = require("../schemas/productUpdate.json");
 const ExpressError = require("../errorHandlers/expressError");
 
 /* ---------- create needed instances ---------- */
-const router = new express.Router();
+const router = new express.Router({ mergeParams: true });
 
-/* ---------- routes prefixed with '/products' ---------- */
+/* ---------- routes prefixed with '/users/:username/products' ---------- */
 
 /** POST;
  *
@@ -22,10 +22,10 @@ const router = new express.Router();
  *
  * Returns {id, userId, name, description, price, cost, sku, minutesToMake, type, updatedAt, createdAt}
  *
- * Authorization required: user must be logged in
+ * Authorization required: admin or same user as username
  **/
 
-router.post("/", ensureLoggedIn, async (req, res, next) => {
+router.post("/", ensureCorrectUserOrAdmin, async (req, res, next) => {
   try {
     const validator = jsonschema.validate(req.body, productNewSchema);
     if (!validator.valid) {

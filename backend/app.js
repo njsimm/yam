@@ -19,7 +19,7 @@ app.use(authenticateJWT);
 
 /* ---------- require/import routes ---------- */
 app.use("/users", userRoutes);
-app.use("/products", productRoutes);
+app.use("/users/:username/products", productRoutes);
 
 /* ---------- Error Handlers ---------- */
 
