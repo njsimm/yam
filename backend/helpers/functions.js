@@ -54,9 +54,9 @@ function prepareUpdateQuery(dataToUpdate, jsToSql) {
  */
 function createToken(user) {
   const payload = {
+    id: user.id,
     username: user.username,
     isAdmin: user.isAdmin || false,
-    id: user.id,
   };
   return jwt.sign(payload, SECRET_KEY);
 }

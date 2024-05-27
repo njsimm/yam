@@ -83,14 +83,15 @@ router.get("/", ensureAdmin, async (req, res, next) => {
 
 /** GET;
  *
- * Returns a user, searched by username.
+ * Returns a user, searched by id.
  *    { username, first_name, last_name, email, is_admin, id }
  *
- * Authorization required: admin or same user as username
+ * Authorization required: admin or same user as id
  **/
-router.get("/:username", ensureCorrectUserOrAdmin, async (req, res, next) => {
+router.get("/:id", ensureCorrectUserOrAdmin, async (req, res, next) => {
   try {
-    const user = await User.getByUsername(req.params.username);
+    const id = Number(req.params.id);
+    const user = await User.getById(id);
     return res.json({ user });
   } catch (error) {
     return next(error);
@@ -99,16 +100,16 @@ router.get("/:username", ensureCorrectUserOrAdmin, async (req, res, next) => {
 
 /** PATCH;
  *
- * Update a user's info given input of username
+ * Update a user's info given input of id
  *
- * If username not change Returns { username, firstName, lastName, email, isAdmin, id }
+ * If username is not changed: Returns { username, firstName, lastName, email, isAdmin, id }
  *
  * If username is changed, issue new JWT to reflect that and return:
  *    {user: {username, firstName, lastName, email, isAdmin, id}, token }
  *
- * Authorization required: admin or same user as username
+ * Authorization required: admin or same user as id
  **/
-router.patch("/:username", ensureCorrectUserOrAdmin, async (req, res, next) => {
+router.patch("/:id", ensureCorrectUserOrAdmin, async (req, res, next) => {
   try {
     const validator = jsonschema.validate(req.body, userUpdateSchema);
     if (!validator.valid) {
@@ -116,7 +117,8 @@ router.patch("/:username", ensureCorrectUserOrAdmin, async (req, res, next) => {
       throw new ExpressError(errors, 400);
     }
 
-    const user = await User.update(req.params.username, req.body);
+    const id = Number(req.params.id);
+    const user = await User.update(id, req.body);
 
     if (req.body.username && req.body.username !== req.user.username) {
       const updatedJWT = createToken(user);
@@ -131,26 +133,22 @@ router.patch("/:username", ensureCorrectUserOrAdmin, async (req, res, next) => {
 
 /** DELETE;
  *
- * Deletes a user given input of username.
+ * Deletes a user given input of id.
  *
  * Returns { message: `${username} deleted.` }
  *
- * Authorization required: admin or same user as username
+ * Authorization required: admin or same user as id
  **/
-router.delete(
-  "/:username",
-  ensureCorrectUserOrAdmin,
-  async (req, res, next) => {
-    try {
-      await User.delete(req.params.username);
+router.delete("/:id", ensureCorrectUserOrAdmin, async (req, res, next) => {
+  try {
+    const id = Number(req.params.id);
+    const user = await User.getById(id);
+    await User.delete(id);
 
-      return res
-        .status(200)
-        .json({ message: `${req.params.username} deleted.` });
-    } catch (error) {
-      return next(error);
-    }
+    return res.status(200).json({ message: `${user.username} deleted.` });
+  } catch (error) {
+    return next(error);
   }
-);
+});
 
 module.exports = router;

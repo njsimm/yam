@@ -72,20 +72,20 @@ class User {
     return results.rows;
   }
 
-  /** Get a user by username.
+  /** Get a user by id.
    *
    * Returns { username, first_name, last_name, email, is_admin, id }
    *
    * Throws ExpressError if user not found.
    **/
-  static async getByUsername(username) {
+  static async getById(id) {
     const results = await db.query(
-      `SELECT email, username, first_name AS "firstName", last_name AS "lastName", is_admin AS "isAdmin", id FROM users WHERE username=$1`,
-      [username]
+      `SELECT email, username, first_name AS "firstName", last_name AS "lastName", is_admin AS "isAdmin", id FROM users WHERE id=$1`,
+      [id]
     );
 
     if (!results.rows[0]) {
-      throw new ExpressError(`Username not found: ${username}`, 404);
+      throw new ExpressError(`User not found with id: ${id}`, 404);
     } else {
       return results.rows[0];
     }
@@ -97,10 +97,10 @@ class User {
    *
    * Returns { username, firstName, lastName, email, isAdmin, id }
    **/
-  static async update(username, newData) {
-    const user = await User.getByUsername(username);
+  static async update(id, newData) {
+    const user = await User.getById(id);
 
-    if (newData.username && newData.username !== username) {
+    if (newData.username && newData.username !== user.username) {
       await User.uniqueCheck("username", newData.username);
     }
 
@@ -121,11 +121,11 @@ class User {
       isAdmin: "is_admin",
     });
 
-    const usernameSanitizedIdx = "$" + (values.length + 1);
+    const idSanitizedIdx = "$" + (values.length + 1);
 
-    const sqlQuery = `UPDATE users SET ${setColumns} WHERE username = ${usernameSanitizedIdx} RETURNING username, email, first_name AS "firstName", last_name AS "lastName", is_admin AS "isAdmin", id`;
+    const sqlQuery = `UPDATE users SET ${setColumns} WHERE id = ${idSanitizedIdx} RETURNING username, email, first_name AS "firstName", last_name AS "lastName", is_admin AS "isAdmin", id`;
 
-    const results = await db.query(sqlQuery, [...values, username]);
+    const results = await db.query(sqlQuery, [...values, id]);
 
     const updatedUser = results.rows[0];
 
@@ -139,13 +139,13 @@ class User {
    *
    * Returns undefined.
    **/
-  static async delete(username) {
+  static async delete(id) {
     const results = await db.query(
-      `DELETE FROM users WHERE username=$1 RETURNING username`,
-      [username]
+      `DELETE FROM users WHERE id=$1 RETURNING username`,
+      [id]
     );
     const user = results.rows[0];
-    if (!user) throw new ExpressError(`Username not found: ${username}`, 404);
+    if (!user) throw new ExpressError(`User not found with id: ${id}`, 404);
   }
 
   /** Check for unique email or username.

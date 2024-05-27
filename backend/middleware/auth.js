@@ -93,7 +93,7 @@ function ensureAdmin(req, res, next) {
 /**
  * Middleware to ensure the user is the correct user or an admin.
  *
- * This middleware function checks if req.user is set from the authenticateJWT middleware function, if the user is the owner of the account being accessed (by comparing req.params.username to req.user.username), or if the user has admin privileges.
+ * This middleware function checks if req.user is set from the authenticateJWT middleware function, if the user is the owner of the account being accessed (by comparing req.params.id to req.user.id), or if the user has admin privileges.
  *
  * If the user is not logged in (no req.user from authenticateJWT), is not the correct user, and is not an admin, it throws an ExpressError with a 401 status code.
  *
@@ -103,16 +103,13 @@ function ensureAdmin(req, res, next) {
  *
  * @example
  * used in routes
- * router.patch('/users/:username', ensureCorrectUserOrAdmin, (req, res, next) => {
+ * router.patch('/users/:id', ensureCorrectUserOrAdmin, (req, res, next) => {
  *   // route handler code here
  * });
  */
 function ensureCorrectUserOrAdmin(req, res, next) {
   try {
-    if (
-      !req.user ||
-      (req.user.username !== req.params.username && !req.user.isAdmin)
-    ) {
+    if (!req.user || (req.user.id !== req.params.id && !req.user.isAdmin)) {
       throw new ExpressError("Unauthorized", 401);
     }
     return next();
