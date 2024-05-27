@@ -102,9 +102,9 @@ router.get("/:id", ensureCorrectUserOrAdmin, async (req, res, next) => {
  *
  * Update a user's info given input of id
  *
- * If username is not changed: Returns { username, firstName, lastName, email, isAdmin, id }
+ * If username is not changed or is changed by the admin: Returns { username, firstName, lastName, email, isAdmin, id }
  *
- * If username is changed, issue new JWT to reflect that and return:
+ * If username is changed by the corret user and not the Admin, issue new JWT to reflect that and return:
  *    {user: {username, firstName, lastName, email, isAdmin, id}, token }
  *
  * Authorization required: admin or same user as id
@@ -120,7 +120,11 @@ router.patch("/:id", ensureCorrectUserOrAdmin, async (req, res, next) => {
     const id = Number(req.params.id);
     const user = await User.update(id, req.body);
 
-    if (req.body.username && req.body.username !== req.user.username) {
+    if (
+      req.body.username &&
+      req.body.username !== req.user.username &&
+      req.user.id === id
+    ) {
       const updatedJWT = createToken(user);
       return res.status(200).json({ user, token: updatedJWT });
     }
