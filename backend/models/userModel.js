@@ -69,6 +69,8 @@ class User {
       `SELECT first_name AS "firstName", last_name AS "lastName", username, email, is_admin AS "isAdmin", id FROM users ORDER BY last_name`
     );
 
+    if (!results.rows.length)
+      throw new ExpressError("No users in database.", 404);
     return results.rows;
   }
 
