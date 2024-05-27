@@ -14,11 +14,11 @@ CREATE TABLE users (
 CREATE TABLE products (
   id SERIAL PRIMARY KEY,
   user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,  -- References the user who owns the product.
-  name VARCHAR(100) NOT NULL,  -- Name of the product.
+  name VARCHAR(100) NOT NULL UNIQUE,  -- Name of the product.
   description TEXT,  -- Description of the product.
   price NUMERIC,  -- Selling price of the product.
   cost NUMERIC,  -- Cost price of the product.
-  sku VARCHAR(50),  -- SKU (Stock Keeping Unit) number.
+  sku VARCHAR(50) UNIQUE,  -- SKU (Stock Keeping Unit) number.
   minutes_to_make INTEGER,  -- Time taken to make the product in minutes (can be NULL).
   type VARCHAR(50),  -- Type of the product (e.g., sticker, crochet, painting).
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,  -- Timestamp for the last update to the product.
