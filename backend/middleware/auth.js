@@ -102,7 +102,7 @@ function ensureAdmin(req, res, next) {
  * @throws {ExpressError} - Throws an error if the user is not logged in, is not the correct user, and is not an admin.
  *
  * @example
- * used in routes
+ * Used in: userRoutes, productRoutes
  * router.patch('/users/:id', ensureCorrectUserOrAdmin, (req, res, next) => {
  *   // route handler code here
  * });

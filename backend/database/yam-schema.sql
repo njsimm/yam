@@ -21,21 +21,13 @@ CREATE TABLE products (
   sku VARCHAR(50),  -- SKU (Stock Keeping Unit) number.
   minutes_to_make INTEGER,  -- Time taken to make the product in minutes (can be NULL).
   type VARCHAR(50),  -- Type of the product (e.g., sticker, crochet, painting).
-  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,  -- Timestamp for the last update to the product.
-  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,  -- Timestamp for when the product was created.
+  quantity INTEGER NOT NULL DEFAULT 0,  -- Current product quantity.
+  product_created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,  -- Timestamp for when the product was created
+  product_updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,  -- Timestamp for the last update to the product info
+  quantity_updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,  -- Timestamp for the last update to the product quantity
   CONSTRAINT unique_user_product_name UNIQUE (user_id, name),  -- Ensures unique product name per user.
   CONSTRAINT unique_user_product_sku UNIQUE (user_id, sku)  -- Ensures unique SKU per user.
 );
-
--- The inventory table tracks the current stock levels of products.
-CREATE TABLE inventory (
-  id SERIAL PRIMARY KEY,
-  product_id INTEGER NOT NULL REFERENCES products(id) ON DELETE CASCADE,  -- References the product.
-  quantity INTEGER NOT NULL,  -- Quantity of the product in stock.
-  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,  -- Timestamp for the last update to the inventory record.
-  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP  -- Timestamp for when the inventory record was created.
-);
-
 
 -- The sales table records sales transactions.
 CREATE TABLE sales (

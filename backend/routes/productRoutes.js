@@ -16,9 +16,9 @@ const router = new express.Router({ mergeParams: true });
  *
  * Create a product
  *
- * Returns {id, userId, name, description, price, cost, sku, minutesToMake, type, updatedAt, createdAt}
+ * Returns {id, userId, name, description, price, cost, sku, minutesToMake, type, quantity, productCreatedAt, productUpdatedAt, quantityUpdatedAt}
  *
- * Authorization required: admin or same user as username
+ * Authorization required: admin or same user as id
  **/
 router.post("/", ensureCorrectUserOrAdmin, async (req, res, next) => {
   try {
@@ -39,7 +39,7 @@ router.post("/", ensureCorrectUserOrAdmin, async (req, res, next) => {
 /** GET;
  *
  * Returns an array of all products for a given user.
- *    [ {id, userId, name, description, price, cost, sku, minutesToMake, type, updatedAt, createdAt}, ...etc ]
+ *    [ {id, userId, name, description, price, cost, sku, minutesToMake, type, quantity, productCreatedAt, productUpdatedAt, quantityUpdatedAt}, ...etc ]
  *
  * Authorization required: admin or same user as id
  **/
@@ -56,7 +56,7 @@ router.get("/", ensureCorrectUserOrAdmin, async (req, res, next) => {
 /** GET;
  *
  * Returns a product given an id.
- *    {id, userId, name, description, price, cost, sku, minutesToMake, type, updatedAt, createdAt}
+ *    {id, userId, name, description, price, cost, sku, minutesToMake, type, quantity, productCreatedAt, productUpdatedAt, quantityUpdatedAt}
  *
  * Authorization required: admin or same user as id
  **/
@@ -76,7 +76,7 @@ router.get("/:productId", ensureCorrectUserOrAdmin, async (req, res, next) => {
  *
  * Update a product's info given a product id.
  *
- * Returns {id, userId, name, description, price, cost, sku, minutesToMake, type, updatedAt, createdAt}
+ * Returns {id, userId, name, description, price, cost, sku, minutesToMake, type, quantity, productCreatedAt, productUpdatedAt, quantityUpdatedAt}
  *
  * Authorization required: admin or same user as id
  **/

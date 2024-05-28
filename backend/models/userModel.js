@@ -24,7 +24,19 @@ class User {
     const hashedPassword = await bcrypt.hash(password, BCRYPT_WORK_FACTOR);
 
     const results = await db.query(
-      `INSERT INTO users (email, username, password, first_name, last_name) VALUES ($1, $2, $3, $4, $5) RETURNING email, username, first_name AS "firstName", last_name AS "lastName", is_admin AS "isAdmin", id`,
+      `INSERT INTO users
+              (email,
+              username,
+              password,
+              first_name,
+              last_name)
+          VALUES ($1, $2, $3, $4, $5)
+          RETURNING id,
+              email,
+              username,
+              first_name AS "firstName",
+              last_name AS "lastName",
+              is_admin AS "isAdmin"`,
       [email, username, hashedPassword, firstName, lastName]
     );
     const user = results.rows[0];
@@ -40,7 +52,15 @@ class User {
    **/
   static async authenticate(username, password) {
     const results = await db.query(
-      `SELECT username, password, email, first_name AS "firstName", last_name AS "lastName", is_admin AS "isAdmin", id FROM users WHERE username=$1`,
+      `SELECT id,
+          username,
+          password,
+          email,
+          first_name AS "firstName",
+          last_name AS "lastName",
+          is_admin AS "isAdmin"
+      FROM users
+      WHERE username=$1`,
       [username]
     );
     const user = results.rows[0];
@@ -66,7 +86,14 @@ class User {
    **/
   static async getAll() {
     const results = await db.query(
-      `SELECT first_name AS "firstName", last_name AS "lastName", username, email, is_admin AS "isAdmin", id FROM users ORDER BY last_name`
+      `SELECT id,
+          first_name AS "firstName",
+          last_name AS "lastName",
+          username,
+          email,
+          is_admin AS "isAdmin"
+      FROM users
+      ORDER BY last_name`
     );
 
     if (!results.rows.length)
@@ -82,7 +109,14 @@ class User {
    **/
   static async getById(id) {
     const results = await db.query(
-      `SELECT email, username, first_name AS "firstName", last_name AS "lastName", is_admin AS "isAdmin", id FROM users WHERE id=$1`,
+      `SELECT id,
+          username,
+          email,
+          first_name AS "firstName",
+          last_name AS "lastName",
+          is_admin AS "isAdmin"
+      FROM users
+      WHERE id=$1`,
       [id]
     );
 
@@ -125,7 +159,15 @@ class User {
 
     const idSanitizedIdx = "$" + (values.length + 1);
 
-    const sqlQuery = `UPDATE users SET ${setColumns} WHERE id = ${idSanitizedIdx} RETURNING username, email, first_name AS "firstName", last_name AS "lastName", is_admin AS "isAdmin", id`;
+    const sqlQuery = `UPDATE users
+    SET ${setColumns}
+    WHERE id = ${idSanitizedIdx}
+    RETURNING id,
+        username,
+        email,
+        first_name AS "firstName",
+        last_name AS "lastName",
+        is_admin AS "isAdmin"`;
 
     const results = await db.query(sqlQuery, [...values, id]);
 
@@ -143,7 +185,10 @@ class User {
    **/
   static async delete(id) {
     const results = await db.query(
-      `DELETE FROM users WHERE id=$1 RETURNING username`,
+      `DELETE
+      FROM users
+      WHERE id=$1
+      RETURNING username`,
       [id]
     );
     const user = results.rows[0];
@@ -156,7 +201,9 @@ class User {
    **/
   static async uniqueCheck(fieldStr, inputVar) {
     const results = await db.query(
-      `SELECT ${fieldStr} FROM users WHERE ${fieldStr}=$1`,
+      `SELECT ${fieldStr}
+      FROM users
+      WHERE ${fieldStr}=$1`,
       [inputVar]
     );
 

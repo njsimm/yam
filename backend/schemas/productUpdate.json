@@ -27,7 +27,18 @@
     },
     "type": {
       "type": "string",
-      "maxLength": "50"
+      "maxLength": 50
+    },
+    "quantity": {
+      "type": "integer"
+    },
+    "productUpdatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "quantityUpdatedAt": {
+      "type": "string",
+      "format": "date-time"
     }
   },
   "examples": [
@@ -38,7 +49,10 @@
       "cost": 9.99,
       "sku": "SKU12345",
       "minutesToMake": 120,
-      "type": "sticker"
+      "type": "sticker",
+      "quantity": 50,
+      "productUpdatedAt": "2024-05-25T12:34:56Z",
+      "quantityUpdatedAt": "2024-05-25T12:34:56Z"
     }
   ]
 }

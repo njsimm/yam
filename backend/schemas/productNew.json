@@ -31,13 +31,23 @@
     },
     "type": {
       "type": "string",
-      "maxLength": "50"
+      "maxLength": 50
     },
-    "updatedAt": {
-      "type": "string"
+    "quantity": {
+      "type": "integer",
+      "default": 0
     },
-    "createdAt": {
-      "type": "string"
+    "productCreatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "productUpdatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "quantityUpdatedAt": {
+      "type": "string",
+      "format": "date-time"
     }
   },
   "examples": [
@@ -50,8 +60,10 @@
       "sku": "SKU12345",
       "minutesToMake": 120,
       "type": "sticker",
-      "updatedAt": "2024-05-25T12:34:56Z",
-      "createdAt": "2024-05-25T12:34:56Z"
+      "quantity": 50,
+      "productCreatedAt": "2024-05-25T12:34:56Z",
+      "productUpdatedAt": "2024-05-25T12:34:56Z",
+      "quantityUpdatedAt": "2024-05-25T12:34:56Z"
     }
   ]
 }
