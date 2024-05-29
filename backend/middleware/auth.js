@@ -2,6 +2,7 @@
 const jwt = require("jsonwebtoken");
 const { SECRET_KEY } = require("../config/config");
 const ExpressError = require("../errorHandlers/expressError");
+const Product = require("../models/productModel");
 
 /* ---------- middleware to run ---------- */
 
@@ -119,9 +120,43 @@ function ensureCorrectUserOrAdmin(req, res, next) {
   }
 }
 
+/**
+ * Middleware to ensure the user is the owner of the product or an admin.
+ *
+ * This middleware function checks if req.user is set from the authenticateJWT middleware function, if the user is the owner of the product being accessed (by checking the product's userId), or if the user has admin privileges.
+ *
+ * If the user is not logged in (no req.user from authenticateJWT), is not the owner of the product, and is not an admin, it throws an ExpressError with a 401 status code.
+ *
+ * If the user is the product owner or an admin, it proceeds.
+ *
+ * @throws {ExpressError} - Throws an error if the user is not logged in, is not the product owner, and is not an admin.
+ *
+ * @example
+ * Used in: salesRoutes
+ * router.patch('products/:productId/sales/:saleId', ensureProductOwnerOrAdmin, (req, res, next) => {
+ *   // route handler code here
+ * });
+ */
+async function ensureProductOwnerOrAdmin(req, res, next) {
+  try {
+    const productId = Number(req.params.productId);
+    const userId = Number(req.user.id);
+
+    const product = await Product.getById(userId, productId);
+
+    if (!req.user || (userId !== product.userId && !req.user.isAdmin)) {
+      throw new ExpressError("Unauthorized", 401);
+    }
+
+    return next();
+  } catch (error) {
+    return next(error);
+  }
+}
 module.exports = {
   authenticateJWT,
   ensureLoggedIn,
   ensureAdmin,
   ensureCorrectUserOrAdmin,
+  ensureProductOwnerOrAdmin,
 };

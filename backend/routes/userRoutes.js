@@ -155,4 +155,21 @@ router.delete("/:id", ensureCorrectUserOrAdmin, async (req, res, next) => {
   }
 });
 
+/** GET;
+ *
+ * Get all products owned by a specific user and their corresponding sales
+ *
+ * Returns [{name, price, cost, sku, type, quantitySold, salePrice, saleDate}, ...]
+ *
+ * Authorization required: admin or same user as id
+ **/
+router.get("/:id/sales", ensureCorrectUserOrAdmin, async (req, res, next) => {
+  try {
+    const id = Number(req.params.id);
+    const userSales = await User.getSales(id);
+    return res.json({ userSales });
+  } catch (error) {
+    return next(error);
+  }
+});
 module.exports = router;

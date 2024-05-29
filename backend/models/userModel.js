@@ -211,6 +211,34 @@ class User {
       throw new ExpressError(`${fieldStr} taken: ${inputVar}`, 409);
     }
   }
+
+  /** Get all sales for a user.
+   *
+   * Returns [{name, price, cost, sku, type, quantitySold, salePrice, saleDate}, ...]
+   *
+   * Ordered by saleDate
+   **/
+  static async getSales(id) {
+    const results = await db.query(
+      `SELECT
+          p.name,
+          p.price,
+          p.cost,
+          p.sku,
+          p.type,
+          s.quantity_sold AS "quantitySold",
+          s.sale_price AS "salePrice",
+          s.sale_date AS "saleDate"
+      FROM products p
+      LEFT JOIN sales s
+      ON p.id = s.product_id
+      WHERE p.user_id = $1
+      ORDER BY s.sale_date ASC`,
+      [id]
+    );
+    if (!results.rows.length) throw new ExpressError("No sales for user", 404);
+    return results.rows;
+  }
 }
 
 module.exports = User;
