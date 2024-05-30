@@ -3,8 +3,8 @@ const express = require("express");
 const jsonschema = require("jsonschema");
 const Sale = require("../models/saleModel");
 const { ensureProductOwnerOrAdmin } = require("../middleware/auth");
-// const saletNewSchema = require("../schemas/saleNew.json");
-// const saleUpdateSchema = require("../schemas/saleUpdate.json");
+const saleNewSchema = require("../schemas/saleNew.json");
+const saleUpdateSchema = require("../schemas/saleUpdate.json");
 const ExpressError = require("../errorHandlers/expressError");
 
 /* ---------- create needed instances ---------- */
@@ -22,7 +22,11 @@ const router = new express.Router({ mergeParams: true });
  **/
 router.post("/", ensureProductOwnerOrAdmin, async (req, res, next) => {
   try {
-    //validator code here when made
+    const validator = jsonschema.validate(req.body, saleNewSchema);
+    if (!validator.valid) {
+      const errors = validator.errors.map((error) => error.stack);
+      throw new ExpressError(errors, 400);
+    }
 
     const userId = Number(req.user.id);
     const productId = Number(req.params.productId);
@@ -80,7 +84,11 @@ router.get("/:salesId", ensureProductOwnerOrAdmin, async (req, res, next) => {
  **/
 router.patch("/:salesId", ensureProductOwnerOrAdmin, async (req, res, next) => {
   try {
-    // update validator schema here
+    const validator = jsonschema.validate(req.body, saleUpdateSchema);
+    if (!validator.valid) {
+      const errors = validator.errors.map((error) => error.stack);
+      throw new ExpressError(errors, 400);
+    }
 
     const productId = Number(req.params.productId);
     const salesId = Number(req.params.salesId);
