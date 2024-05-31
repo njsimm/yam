@@ -172,4 +172,26 @@ router.get("/:id/sales", ensureCorrectUserOrAdmin, async (req, res, next) => {
     return next(error);
   }
 });
+
+/** GET;
+ *
+ * Get all business sales for a specific user
+ *
+ * Returns [{businessName, contactInfo, productName, productPrice, productCost, productSku, productType, quantitySold, salePrice, businessPercentage, saleDate}, ...]
+ *
+ * Authorization required: admin or same user as id
+ **/
+router.get(
+  "/:id/businessSales",
+  ensureCorrectUserOrAdmin,
+  async (req, res, next) => {
+    try {
+      const id = Number(req.params.id);
+      const businessSales = await User.getBusinessSales(id);
+      return res.json({ businessSales });
+    } catch (error) {
+      return next(error);
+    }
+  }
+);
 module.exports = router;

@@ -8,6 +8,8 @@ const { authenticateJWT } = require("./middleware/auth");
 const userRoutes = require("./routes/userRoutes");
 const productRoutes = require("./routes/productRoutes");
 const salesRoutes = require("./routes/saleRoutes");
+const businessRoutes = require("./routes/businessRoutes");
+const businessSaleRoutes = require("./routes/businessSaleRoutes");
 
 /* ---------- create needed instances ---------- */
 const app = express();
@@ -22,6 +24,8 @@ app.use(authenticateJWT);
 app.use("/users", userRoutes);
 app.use("/users/:id/products", productRoutes);
 app.use("/products/:productId/sales", salesRoutes);
+app.use("/users/:id/businesses", businessRoutes);
+app.use("/businesses/:businessId/businessSales", businessSaleRoutes);
 
 /* ---------- Error Handlers ---------- */
 

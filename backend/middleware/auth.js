@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const { SECRET_KEY } = require("../config/config");
 const ExpressError = require("../errorHandlers/expressError");
 const Product = require("../models/productModel");
+const Business = require("../models/businessModel");
 
 /* ---------- middleware to run ---------- */
 
@@ -153,10 +154,45 @@ async function ensureProductOwnerOrAdmin(req, res, next) {
     return next(error);
   }
 }
+
+/**
+ * Middleware to ensure the user linked to the business or an admin.
+ *
+ * This middleware function checks if req.user is set from the authenticateJWT middleware function, if the user is linked to the business being accessed (by checking the business's userId), or if the user has admin privileges.
+ *
+ * If the user is not logged in (no req.user from authenticateJWT), is not linked to the business, and is not an admin, it throws an ExpressError with a 401 status code.
+ *
+ * If the user is linked to the business or an admin, it proceeds.
+ *
+ * @throws {ExpressError} - Throws an error if the user is not logged in, is not linked to the business, and is not an admin.
+ *
+ * @example
+ * Used in: businessSalesRoutes
+ * router.patch('/businesses/:businessId/businessSales/:businessSalesId', ensureBusinessUserOrAdmin, (req, res, next) => {
+ *   // route handler code here
+ * });
+ */
+async function ensureBusinessUserOrAdmin(req, res, next) {
+  try {
+    const businessId = Number(req.params.businessId);
+    const userId = Number(req.user.id);
+
+    const business = await Business.getById(userId, businessId);
+
+    if (!req.user || (userId !== business.userId && !req.user.isAdmin)) {
+      throw new ExpressError("Unauthorized", 401);
+    }
+
+    return next();
+  } catch (error) {
+    return next(error);
+  }
+}
 module.exports = {
   authenticateJWT,
   ensureLoggedIn,
   ensureAdmin,
   ensureCorrectUserOrAdmin,
   ensureProductOwnerOrAdmin,
+  ensureBusinessUserOrAdmin,
 };

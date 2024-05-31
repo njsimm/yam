@@ -11,7 +11,7 @@ const Product = require("./productModel");
 class Sale {
   /** Creates a new sale
    *
-   * Returns {id, userId, productId, quantitySold, salePrice, saleDate, createdAt, updatedAt}
+   * Returns {id, userId, productId, quantitySold, salePrice, saleDate}
    *
    * The inventoryCheck method throws an ExpressError if the quantitySold is > the quantity of the product.
    **/
