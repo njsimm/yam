@@ -49,12 +49,11 @@ class BusinessSale {
     return businessSale;
   }
 
-  /** Get all business sales for a given product
+  /** Get all business sales for a given business
    *
    * Returns [{id, quantitySold, salePrice, businessPercentage, saleDate, name, price, cost, sku}, ...]
    **/
-  static async getAllProdSales(businessId, productId) {
-    if (!productId) throw new ExpressError("Product ID needed", 400);
+  static async getAllBusinessSales(businessId) {
     const results = await db.query(
       `SELECT 
             bs.id,
@@ -68,25 +67,23 @@ class BusinessSale {
             p.sku
         FROM business_sales bs
         JOIN products p ON bs.product_id = p.id
-        WHERE bs.product_id = $1
-        AND bs.business_id = $2`,
-      [productId, businessId]
+        WHERE bs.business_id = $1`,
+      [businessId]
     );
 
     if (!results.rows.length)
       throw new ExpressError(
-        `No business sales for product with ID of ${productId}`,
+        `No business sales for business with ID of ${businessId}`,
         404
       );
     return results.rows;
   }
 
-  /** Get a specific business sale for a given product
+  /** Get a specific business sale
    *
    * Returns {id, quantitySold, salePrice, businessPercentage, saleDate, name, price, cost, sku}
    **/
-  static async getOneProdSale(businessId, businessSalesId, productId) {
-    if (!productId) throw new ExpressError("Product ID needed", 400);
+  static async getOneBusinessSale(businessId, businessSalesId) {
     const results = await db.query(
       `SELECT 
                 bs.id,
@@ -97,14 +94,14 @@ class BusinessSale {
                 p.name,
                 p.price,
                 p.cost,
-                p.sku
+                p.sku,
+                bs.product_id AS "productId"
             FROM business_sales bs
             JOIN products p
             ON bs.product_id = p.id
             WHERE bs.id = $1
-            AND bs.business_id = $2
-            AND bs.product_id = $3`,
-      [businessSalesId, businessId, productId]
+            AND bs.business_id = $2`,
+      [businessSalesId, businessId]
     );
 
     if (!results.rows[0])
@@ -122,11 +119,10 @@ class BusinessSale {
    *
    * Returns {id, businessId, productId, quantitySold, salePrice, businessPercentage, saleDate, createdAt, updatedAt}
    **/
-  static async update(businessId, businessSalesId, productId, newData) {
-    const businessSale = await BusinessSale.getOneProdSale(
+  static async update(businessId, businessSalesId, newData) {
+    const businessSale = await BusinessSale.getOneBusinessSale(
       businessId,
-      businessSalesId,
-      productId
+      businessSalesId
     );
 
     const fieldsToCheck = [

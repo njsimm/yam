@@ -38,7 +38,7 @@ router.post("/", ensureBusinessUserOrAdmin, async (req, res, next) => {
 
 /** GET;
  *
- * Get all business sales for a given product
+ * Get all business sales for a given business
  *
  * Returns [{id, quantitySold, salePrice, businessPercentage, saleDate, name, price, cost, sku}, ...]
  *
@@ -47,11 +47,7 @@ router.post("/", ensureBusinessUserOrAdmin, async (req, res, next) => {
 router.get("/", ensureBusinessUserOrAdmin, async (req, res, next) => {
   try {
     const businessId = Number(req.params.businessId);
-    const productId = Number(req.body.productId);
-    const businessSales = await BusinessSale.getAllProdSales(
-      businessId,
-      productId
-    );
+    const businessSales = await BusinessSale.getAllBusinessSales(businessId);
     return res.json({ businessSales });
   } catch (error) {
     return next(error);
@@ -60,7 +56,7 @@ router.get("/", ensureBusinessUserOrAdmin, async (req, res, next) => {
 
 /** GET;
  *
- * Get a specific business sale for a given product
+ * Get a specific business sale
  *
  * Returns {id, quantitySold, salePrice, businessPercentage, saleDate, name, price, cost, sku}
  *
@@ -73,11 +69,9 @@ router.get(
     try {
       const businessId = Number(req.params.businessId);
       const businessSalesId = Number(req.params.businessSalesId);
-      const productId = Number(req.body.productId);
-      const businessSale = await BusinessSale.getOneProdSale(
+      const businessSale = await BusinessSale.getOneBusinessSale(
         businessId,
-        businessSalesId,
-        productId
+        businessSalesId
       );
       return res.json({ businessSale });
     } catch (error) {
@@ -107,12 +101,10 @@ router.patch(
 
       const businessId = Number(req.params.businessId);
       const businessSalesId = Number(req.params.businessSalesId);
-      const productId = Number(req.body.productId);
 
       const businessSale = await BusinessSale.update(
         businessId,
         businessSalesId,
-        productId,
         req.body
       );
       return res.status(200).json({ businessSale });

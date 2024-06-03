@@ -3,7 +3,6 @@
   "$id": "http://example.com/example.json",
   "type": "object",
   "title": "businessSaleUpdate Schema",
-  "required": ["productId"],
   "properties": {
     "id": {
       "type": "integer"
