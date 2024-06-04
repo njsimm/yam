@@ -2,6 +2,7 @@
 const ExpressError = require("./errorHandlers/expressError");
 const express = require("express");
 const morgan = require("morgan");
+const cors = require("cors");
 const { authenticateJWT } = require("./middleware/auth");
 
 /* ---------- require/import routes folders' contents ---------- */
@@ -15,6 +16,7 @@ const businessSaleRoutes = require("./routes/businessSaleRoutes");
 const app = express();
 
 /* ---------- middleware ---------- */
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan("dev"));
