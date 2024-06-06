@@ -54,20 +54,28 @@ class YamAPI {
     }
   }
 
-  /** static async registerUser
-   *
-   * Registers a new user.
-   */
-  static async registerUser(userData) {
-    return await this.request("users/register", userData, "post");
+  /** Get the current user. */
+  static async getCurrentUser(userId) {
+    let response = await this.request(`users/${userId}`);
+    return response.user;
   }
 
-  /** static async loginUser
+  /** static async register
    *
-   * Logs in a user.
+   * Registers a new user. Returns JWT
    */
-  static async loginUser(loginData) {
-    return await this.request("users/login", loginData, "post");
+  static async register(userData) {
+    let response = await this.request("users/register", userData, "post");
+    return response.token;
+  }
+
+  /** static async login
+   *
+   * Logs in a user. Returns JWT
+   */
+  static async login(loginData) {
+    let response = await this.request("users/login", loginData, "post");
+    return response.token;
   }
 
   /** static async getAllUsers
