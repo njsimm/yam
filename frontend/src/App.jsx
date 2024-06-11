@@ -7,6 +7,7 @@ import YamRoutes from "./components/routes/Routes";
 import useLocalStorage from "./hooks/useLocalStorage";
 import YamAPI from "./utils/YamApi";
 import UserContext from "./utils/UserContext";
+import Loading from "./components/loading/Loading";
 
 /** The key name for storing JWT token in localStorage. The value for this key will be the JWT.
  *
@@ -15,10 +16,19 @@ import UserContext from "./utils/UserContext";
 export const TOKEN_STORAGE_ID = "yam-token";
 
 function App() {
+  const [infoLoaded, setInfoLoaded] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
   const [token, setToken] = useLocalStorage(TOKEN_STORAGE_ID);
 
-  console.debug("App", "currentUser=", currentUser, "token=", token);
+  console.debug(
+    "App",
+    "infoLoaded=",
+    infoLoaded,
+    "currentUser=",
+    currentUser,
+    "token=",
+    token
+  );
 
   useEffect(
     function loadUserInfo() {
@@ -38,8 +48,9 @@ function App() {
             setCurrentUser(null);
           }
         }
+        setInfoLoaded(true);
       }
-
+      setInfoLoaded(false);
       getCurrentUser();
     },
     [token]
@@ -90,13 +101,14 @@ function App() {
   const toggleTheme = () => {
     setMode((prevMode) => (prevMode === "light" ? "dark" : "light"));
   };
-
+  if (!infoLoaded) return <Loading />;
   return (
     <BrowserRouter>
-      <UserContext.Provider value={{ currentUser, setCurrentUser }}>
+      <UserContext.Provider
+        value={{ currentUser, setCurrentUser, mode, toggleTheme, logout }}
+      >
         <ThemeProvider theme={theme}>
           <CssBaseline />
-          <button onClick={toggleTheme}>Toggle Theme</button>
           <YamRoutes login={login} register={register} />
         </ThemeProvider>
       </UserContext.Provider>

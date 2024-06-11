@@ -78,6 +78,15 @@ class YamAPI {
     return response.token;
   }
 
+  /** static async getAllSalesInfo
+   *
+   * Get all sales for a specific user, including direct sales and business sales..
+   */
+  static async getAllSalesInfo(userId) {
+    let response = await this.request(`users/${userId}/allSalesInfo`);
+    return response.sales;
+  }
+
   /** static async getAllUsers
    *
    * Retrieves all users.

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
@@ -8,8 +8,10 @@ import Box from "@mui/material/Box";
 import LoginRoundedIcon from "@mui/icons-material/LoginRounded";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
+import UserContext from "../../utils/UserContext";
 
 export default function RegisterForm({ register }) {
+  const { currentUser } = useContext(UserContext);
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -19,6 +21,12 @@ export default function RegisterForm({ register }) {
     username: "",
     password: "",
   });
+
+  useEffect(() => {
+    if (currentUser) {
+      navigate("/users/dashboard");
+    }
+  }, [currentUser, navigate]);
 
   async function handleSubmit(e) {
     e.preventDefault();

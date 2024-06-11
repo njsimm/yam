@@ -273,6 +273,54 @@ class User {
 
     return results.rows;
   }
+
+  /** Get all sales for a user, including direct sales and business sales.
+   *
+   * Returns [{name, price, cost, sku, type, quantitySold, salePrice, saleDate, businessName, contactInfo, businessPercentage}, ...]
+   *
+   * Ordered by saleDate
+   **/
+  static async getAllSalesInfo(id) {
+    const results = await db.query(
+      `SELECT 
+       p.name AS "name",
+       p.price AS "price",
+       p.cost AS "cost",
+       p.sku AS "sku",
+       p.type AS "type",
+       s.quantity_sold AS "quantitySold",
+       s.sale_price AS "salePrice",
+       s.sale_date AS "saleDate",
+       NULL AS "businessName",
+       NULL AS "contactInfo",
+       NULL AS "businessPercentage"
+     FROM sales s
+     JOIN products p ON s.product_id = p.id
+     WHERE s.user_id = $1
+     UNION
+     SELECT 
+       p.name AS "name",
+       p.price AS "price",
+       p.cost AS "cost",
+       p.sku AS "sku",
+       p.type AS "type",
+       bs.quantity_sold AS "quantitySold",
+       bs.sale_price AS "salePrice",
+       bs.sale_date AS "saleDate",
+       b.name AS "businessName",
+       b.contact_info AS "contactInfo",
+       bs.business_percentage AS "businessPercentage"
+     FROM business_sales bs
+     JOIN businesses b ON bs.business_id = b.id
+     JOIN products p ON bs.product_id = p.id
+     WHERE b.user_id = $1
+     ORDER BY "saleDate"`,
+      [id]
+    );
+    if (!results.rows.length) throw new ExpressError("No sales for user", 404);
+
+    return results.rows;
+  }
 }
 
 module.exports = User;

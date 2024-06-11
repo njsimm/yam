@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
@@ -8,8 +8,10 @@ import Box from "@mui/material/Box";
 import VpnKeyRoundedIcon from "@mui/icons-material/VpnKeyRounded";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
+import UserContext from "../../utils/UserContext";
 
 export default function LoginForm({ login }) {
+  const { currentUser } = useContext(UserContext);
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: "",
@@ -20,7 +22,8 @@ export default function LoginForm({ login }) {
     e.preventDefault();
     let response = await login(formData);
     if (response.success) {
-      navigate("/");
+      // fix navigate redirect
+      navigate("/users/dashboard");
     }
   }
 
@@ -28,6 +31,12 @@ export default function LoginForm({ login }) {
     const { name, value } = e.target;
     setFormData((data) => ({ ...data, [name]: value }));
   }
+
+  useEffect(() => {
+    if (currentUser) {
+      navigate("/users/dashboard");
+    }
+  }, [currentUser, navigate]);
 
   return (
     <Container component="main" maxWidth="xs">

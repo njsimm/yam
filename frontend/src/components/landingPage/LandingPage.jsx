@@ -1,10 +1,12 @@
 import React, { useContext, useEffect } from "react";
-import { Box, Typography, Button, Grid } from "@mui/material";
+import { Box, Typography, Button, Grid, IconButton } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
+import WbSunnyRoundedIcon from "@mui/icons-material/WbSunnyRounded";
+import ModeNightRoundedIcon from "@mui/icons-material/ModeNightRounded";
 import UserContext from "../../utils/UserContext";
 
 export default function LandingPage() {
-  const { currentUser } = useContext(UserContext);
+  const { currentUser, mode, toggleTheme } = useContext(UserContext);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -102,6 +104,26 @@ export default function LandingPage() {
               Register
             </Button>
           </Grid>
+        </Grid>
+        <Grid
+          container
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            marginTop: 2,
+          }}
+        >
+          <IconButton
+            onClick={toggleTheme}
+            aria-label="button to toggle theme"
+            sx={{ minWidth: "32px", height: "32px", p: "4px" }}
+          >
+            {mode === "dark" ? (
+              <WbSunnyRoundedIcon fontSize="small" />
+            ) : (
+              <ModeNightRoundedIcon fontSize="small" />
+            )}
+          </IconButton>
         </Grid>
       </Grid>
     </Box>

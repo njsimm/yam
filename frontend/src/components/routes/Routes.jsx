@@ -3,7 +3,9 @@ import { Routes, Route } from "react-router-dom";
 import LandingPage from "../landingPage/LandingPage";
 import LoginForm from "../forms/LoginForm";
 import RegisterForm from "../forms/RegisterForm";
+import Dashboard from "../dashboard/Dashboard";
 import UserContext from "../../utils/UserContext";
+import ProtectedRoute from "./ProtectedRoute";
 
 export default function YamRoutes({ login, register }) {
   return (
@@ -14,9 +16,9 @@ export default function YamRoutes({ login, register }) {
         path="/users/register"
         element={<RegisterForm register={register} />}
       />
-      {/**temp dashboard */}
-      <Route path="/users/dashboard" element={<h1>dashboard</h1>} />
-
+      <Route element={<ProtectedRoute />}>
+        <Route path="/users/dashboard" element={<Dashboard />} />
+      </Route>
       {/**temp 404 page */}
       <Route path="*" element={<h1>404 error</h1>} />
     </Routes>

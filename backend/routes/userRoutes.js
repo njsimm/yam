@@ -194,4 +194,28 @@ router.get(
     }
   }
 );
+
+/**
+ * GET
+ *
+ * Get all sales for a specific user, including direct sales and business sales.
+ *
+ * Returns [{name, price, cost, sku, type, quantitySold, salePrice, saleDate, businessName, contactInfo, businessPercentage}, ...]
+ *
+ * Authorization required: admin or same user as id
+ **/
+router.get(
+  "/:id/allSalesInfo",
+  ensureCorrectUserOrAdmin,
+  async (req, res, next) => {
+    try {
+      const id = Number(req.params.id);
+      const sales = await User.getAllSalesInfo(id);
+      return res.json({ sales });
+    } catch (error) {
+      return next(error);
+    }
+  }
+);
+
 module.exports = router;
