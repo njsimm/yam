@@ -44,6 +44,12 @@ export const mainListItems = () => {
         </ListItemIcon>
         <ListItemText primary="Sales" />
       </ListItemButton>
+      <ListItemButton onClick={() => navigate(`/users/${userId}/profile`)}>
+        <ListItemIcon>
+          <BarChartIcon />
+        </ListItemIcon>
+        <ListItemText primary="Profile" />
+      </ListItemButton>
     </React.Fragment>
   );
 };
@@ -59,15 +65,6 @@ export const secondaryListItems = () => {
 
   return (
     <React.Fragment>
-      <ListSubheader component="div" inset>
-        User Settings
-      </ListSubheader>
-      <ListItemButton>
-        <ListItemIcon>
-          <AssignmentIcon />
-        </ListItemIcon>
-        <ListItemText primary="Profile" />
-      </ListItemButton>
       <ListItemButton onClick={handleLogout}>
         <ListItemIcon>
           <AssignmentIcon />

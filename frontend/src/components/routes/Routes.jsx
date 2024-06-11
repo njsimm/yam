@@ -18,6 +18,16 @@ export default function YamRoutes({ login, register }) {
       />
       <Route element={<ProtectedRoute />}>
         <Route path="/users/dashboard" element={<Dashboard />} />
+        <Route
+          path="/users/:userId/products"
+          element={<h1>products page</h1>}
+        />
+        <Route
+          path="/users/:userId/businesses"
+          element={<h1>business page</h1>}
+        />
+        <Route path="/users/:userId/sales" element={<h1>sales page</h1>} />
+        <Route path="/users/:userId/profile" element={<h1>profile</h1>} />
       </Route>
       {/**temp 404 page */}
       <Route path="*" element={<h1>404 error</h1>} />
