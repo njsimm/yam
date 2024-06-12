@@ -140,7 +140,12 @@ class YamAPI {
    * Creates a new product.
    */
   static async createProduct(userId, productData) {
-    return await this.request(`users/${userId}/products`, productData, "post");
+    const response = await this.request(
+      `users/${userId}/products`,
+      productData,
+      "post"
+    );
+    return response.product;
   }
 
   /** static async getAllProducts

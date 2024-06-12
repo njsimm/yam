@@ -11,8 +11,14 @@ import ProductsItemPage from "../products/ProductsItemPage";
 import BusinessesPage from "../businesses/BusinessesPage";
 import SalesPage from "../sales/SalesPage";
 import UserProfile from "../profile/UserProfile";
+import ProductNewPage from "../products/ProductNewPage";
 
-export default function YamRoutes({ login, register }) {
+export default function YamRoutes({
+  login,
+  register,
+  createProduct,
+  deleteProduct,
+}) {
   return (
     <Routes>
       <Route path="/" element={<LandingPage />} />
@@ -23,11 +29,19 @@ export default function YamRoutes({ login, register }) {
       />
       <Route element={<ProtectedRoute />}>
         <Route path="/users/dashboard" element={<Dashboard />} />
-        <Route path="/users/:userId/products" element={<ProductsPage />} />
+        <Route
+          path="/users/:userId/products"
+          element={<ProductsPage deleteProduct={deleteProduct} />}
+        />
         <Route
           path="/users/:userId/products/:productId"
           element={<ProductsItemPage />}
         />
+        <Route
+          path="/products/add-product"
+          element={<ProductNewPage createProduct={createProduct} />}
+        />
+
         <Route path="/users/:userId/businesses" element={<BusinessesPage />} />
         <Route path="/users/:userId/sales" element={<SalesPage />} />
         <Route path="/users/:userId/profile" element={<UserProfile />} />

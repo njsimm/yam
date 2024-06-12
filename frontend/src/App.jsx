@@ -91,6 +91,34 @@ function App() {
     }
   }
 
+  /** Handles creating a new product */
+  async function createProduct(productData) {
+    if (!currentUser) {
+      return { success: false, errors: ["No user logged in"] };
+    }
+    try {
+      await YamAPI.createProduct(currentUser.id, productData);
+      return { success: true };
+    } catch (errors) {
+      console.error("createProduct failed", errors);
+      return { success: false, errors };
+    }
+  }
+
+  /** Handles deleting a product */
+  async function deleteProduct(productId) {
+    if (!currentUser) {
+      return { success: false, errors: ["No user logged in"] };
+    }
+    try {
+      await YamAPI.deleteProduct(currentUser.id, productId);
+      return { success: true };
+    } catch (errors) {
+      console.error("deleteProduct failed", errors);
+      return { success: false, errors };
+    }
+  }
+
   const [mode, setMode] = useState("light");
 
   const theme = useMemo(
@@ -109,7 +137,12 @@ function App() {
       >
         <ThemeProvider theme={theme}>
           <CssBaseline />
-          <YamRoutes login={login} register={register} />
+          <YamRoutes
+            login={login}
+            register={register}
+            createProduct={createProduct}
+            deleteProduct={deleteProduct}
+          />
         </ThemeProvider>
       </UserContext.Provider>
     </BrowserRouter>

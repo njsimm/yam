@@ -13,7 +13,7 @@ import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 
-export default function ProductsList() {
+export default function ProductsList({ deleteProduct }) {
   const { currentUser } = useContext(UserContext);
   const [productsData, setProductsData] = useState([]);
 
@@ -34,10 +34,37 @@ export default function ProductsList() {
     fetchProducts();
   }, [currentUser]);
 
+  const handleDelete = async (productId) => {
+    const response = await deleteProduct(productId);
+    if (response.success) {
+      setProductsData(
+        productsData.filter((product) => product.id !== productId)
+      );
+    } else {
+      console.error("Failed to delete product:", response.errors);
+    }
+  };
+
   return (
     <Grid item xs={12}>
       <Paper sx={{ p: 2, display: "flex", flexDirection: "column" }}>
-        <Title>Product List</Title>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <Title>Product List</Title>
+          <Button
+            variant="outlined"
+            color="primary"
+            component={Link}
+            to="/products/add-product"
+          >
+            Add
+          </Button>
+        </Box>
         <Table size="small">
           <TableHead>
             <TableRow>
@@ -75,6 +102,14 @@ export default function ProductsList() {
                       size="small"
                     >
                       View Details
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      color="primary"
+                      onClick={() => handleDelete(product.id)}
+                      size="small"
+                    >
+                      Delete
                     </Button>
                   </Box>
                 </TableCell>

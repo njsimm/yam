@@ -1,51 +1,41 @@
-import React, { useState, useEffect } from "react";
-import { TextField, Button, Box, Container, Typography } from "@mui/material";
+import React from "react";
+import {
+  TextField,
+  Button,
+  Box,
+  Container,
+  Typography,
+  Alert,
+} from "@mui/material";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
 
-export default function ProductUpdateForm({ product, onSave, onCancel }) {
-  const [formData, setFormData] = useState({
-    name: "",
-    description: "",
-    price: "",
-    cost: "",
-    sku: "",
-    minutesToMake: "",
-    type: "",
-    quantity: "",
-  });
+const validationSchema = Yup.object({
+  name: Yup.string().min(1).max(100).required("Name is required"),
+  description: Yup.string(),
+  price: Yup.number(),
+  cost: Yup.number(),
+  sku: Yup.string().max(50),
+  minutesToMake: Yup.number().integer(),
+  type: Yup.string().max(50),
+  quantity: Yup.number().integer().required("Quantity is required"),
+});
 
-  useEffect(() => {
-    if (product) {
-      setFormData({
-        name: product.name || "",
-        description: product.description || "",
-        price: product.price || "",
-        cost: product.cost || "",
-        sku: product.sku || "",
-        minutesToMake: product.minutesToMake || "",
-        type: product.type || "",
-        quantity: product.quantity || "",
-      });
-    }
-  }, [product]);
-
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setFormData({ ...formData, [name]: value });
-  };
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    // Convert string values to numbers for the appropriate fields
-    const updatedFormData = {
-      ...formData,
-      price: parseFloat(formData.price),
-      cost: parseFloat(formData.cost),
-      quantity: parseInt(formData.quantity, 10),
-      minutesToMake: formData.minutesToMake
-        ? parseInt(formData.minutesToMake, 10)
-        : null,
-    };
-    onSave(updatedFormData);
+export default function ProductUpdateForm({
+  product,
+  onSave,
+  onCancel,
+  errorMessage,
+}) {
+  const initialValues = {
+    name: product?.name || "",
+    description: product?.description || "",
+    price: product?.price || "",
+    cost: product?.cost || "",
+    sku: product?.sku || "",
+    minutesToMake: product?.minutesToMake || "",
+    type: product?.type || "",
+    quantity: product?.quantity || "",
   };
 
   return (
@@ -61,97 +51,132 @@ export default function ProductUpdateForm({ product, onSave, onCancel }) {
         <Typography component="h1" variant="h5">
           Update Product
         </Typography>
-        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            id="name"
-            label="Name"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-          />
-          <TextField
-            margin="normal"
-            fullWidth
-            id="description"
-            label="Description"
-            name="description"
-            value={formData.description}
-            onChange={handleChange}
-          />
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            id="price"
-            label="Price"
-            name="price"
-            value={formData.price}
-            onChange={handleChange}
-            type="number"
-          />
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            id="cost"
-            label="Cost"
-            name="cost"
-            value={formData.cost}
-            onChange={handleChange}
-            type="number"
-          />
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            id="sku"
-            label="SKU"
-            name="sku"
-            value={formData.sku}
-            onChange={handleChange}
-          />
-          <TextField
-            margin="normal"
-            fullWidth
-            id="minutesToMake"
-            label="Minutes to Make"
-            name="minutesToMake"
-            value={formData.minutesToMake}
-            onChange={handleChange}
-            type="number"
-          />
-          <TextField
-            margin="normal"
-            fullWidth
-            id="type"
-            label="Type"
-            name="type"
-            value={formData.type}
-            onChange={handleChange}
-          />
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            id="quantity"
-            label="Quantity"
-            name="quantity"
-            value={formData.quantity}
-            onChange={handleChange}
-            type="number"
-          />
-          <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}>
-            <Button type="submit" variant="contained" color="primary">
-              Save
-            </Button>
-            <Button variant="outlined" color="secondary" onClick={onCancel}>
-              Cancel
-            </Button>
-          </Box>
-        </Box>
+        <Formik
+          initialValues={initialValues}
+          validationSchema={validationSchema}
+          onSubmit={(values, { setSubmitting }) => {
+            setSubmitting(true);
+            onSave({
+              ...values,
+              price: parseFloat(values.price),
+              cost: parseFloat(values.cost),
+              quantity: parseInt(values.quantity, 10),
+              minutesToMake: values.minutesToMake
+                ? parseInt(values.minutesToMake, 10)
+                : null,
+            }).finally(() => {
+              setSubmitting(false);
+            });
+          }}
+        >
+          {({ isSubmitting }) => (
+            <Form>
+              {errorMessage && (
+                <Alert severity="error" sx={{ width: "100%", mt: 2 }}>
+                  {errorMessage}
+                </Alert>
+              )}
+              <Field
+                as={TextField}
+                margin="normal"
+                required
+                fullWidth
+                id="name"
+                label="Name"
+                name="name"
+                autoComplete="name"
+                autoFocus
+              />
+              <ErrorMessage name="name" component="div" />
+              <Field
+                as={TextField}
+                margin="normal"
+                fullWidth
+                id="description"
+                label="Description"
+                name="description"
+              />
+              <ErrorMessage name="description" component="div" />
+              <Field
+                as={TextField}
+                margin="normal"
+                required
+                fullWidth
+                id="price"
+                label="Price"
+                name="price"
+                type="number"
+              />
+              <ErrorMessage name="price" component="div" />
+              <Field
+                as={TextField}
+                margin="normal"
+                required
+                fullWidth
+                id="cost"
+                label="Cost"
+                name="cost"
+                type="number"
+              />
+              <ErrorMessage name="cost" component="div" />
+              <Field
+                as={TextField}
+                margin="normal"
+                required
+                fullWidth
+                id="sku"
+                label="SKU"
+                name="sku"
+              />
+              <ErrorMessage name="sku" component="div" />
+              <Field
+                as={TextField}
+                margin="normal"
+                fullWidth
+                id="minutesToMake"
+                label="Minutes to Make"
+                name="minutesToMake"
+                type="number"
+              />
+              <ErrorMessage name="minutesToMake" component="div" />
+              <Field
+                as={TextField}
+                margin="normal"
+                fullWidth
+                id="type"
+                label="Type"
+                name="type"
+              />
+              <ErrorMessage name="type" component="div" />
+              <Field
+                as={TextField}
+                margin="normal"
+                required
+                fullWidth
+                id="quantity"
+                label="Quantity"
+                name="quantity"
+                type="number"
+              />
+              <ErrorMessage name="quantity" component="div" />
+              <Box
+                sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}
+              >
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  disabled={isSubmitting}
+                >
+                  Save
+                </Button>
+                <Button variant="outlined" color="secondary" onClick={onCancel}>
+                  Cancel
+                </Button>
+              </Box>
+            </Form>
+          )}
+        </Formik>
       </Box>
     </Container>
   );

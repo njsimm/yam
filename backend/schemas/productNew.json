@@ -14,23 +14,23 @@
       "maxLength": 100
     },
     "description": {
-      "type": "string"
+      "type": ["string", "null"]
     },
     "price": {
-      "type": "number"
+      "type": ["number", "null"]
     },
     "cost": {
-      "type": "number"
+      "type": ["number", "null"]
     },
     "sku": {
-      "type": "string",
+      "type": ["string", "null"],
       "maxLength": 50
     },
     "minutesToMake": {
-      "type": "integer"
+      "type": ["integer", "null"]
     },
     "type": {
-      "type": "string",
+      "type": ["string", "null"],
       "maxLength": 50
     },
     "quantity": {

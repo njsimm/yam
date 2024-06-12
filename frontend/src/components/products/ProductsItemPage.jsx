@@ -20,6 +20,7 @@ const ProductsItemPage = () => {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [editMode, setEditMode] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     async function fetchProduct() {
@@ -41,6 +42,7 @@ const ProductsItemPage = () => {
 
   const handleCancelClick = () => {
     setEditMode(false);
+    setErrorMessage(""); // Clear error message on cancel
   };
 
   const handleSave = async (formData) => {
@@ -52,8 +54,14 @@ const ProductsItemPage = () => {
       );
       setProduct(updatedProduct);
       setEditMode(false);
+      setErrorMessage(""); // Clear error message on successful save
     } catch (err) {
       console.error("Product updateProduct: problem updating product", err);
+      setErrorMessage(
+        "Error updating product: " +
+          (err.response?.data?.message ||
+            "Check all fields and make sure name is not already being used.")
+      );
     }
   };
 
@@ -90,6 +98,7 @@ const ProductsItemPage = () => {
               product={product}
               onSave={handleSave}
               onCancel={handleCancelClick}
+              errorMessage={errorMessage} // Pass error message to the form
             />
           ) : (
             <Box>
