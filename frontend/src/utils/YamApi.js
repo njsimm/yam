@@ -148,7 +148,8 @@ class YamAPI {
    * Retrieves all products for a given user.
    */
   static async getAllProducts(userId) {
-    return await this.request(`users/${userId}/products`);
+    let response = await this.request(`users/${userId}/products`);
+    return response.products;
   }
 
   /** static async getProductById
@@ -156,7 +157,8 @@ class YamAPI {
    * Retrieves a product by ID for a given user.
    */
   static async getProductById(userId, productId) {
-    return await this.request(`users/${userId}/products/${productId}`);
+    let response = await this.request(`users/${userId}/products/${productId}`);
+    return response.product;
   }
 
   /** static async updateProduct
@@ -164,11 +166,12 @@ class YamAPI {
    * Updates a product's information.
    */
   static async updateProduct(userId, productId, updateData) {
-    return await this.request(
+    let response = await this.request(
       `users/${userId}/products/${productId}`,
       updateData,
       "patch"
     );
+    return response.product;
   }
 
   /** static async deleteProduct

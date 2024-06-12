@@ -1,9 +1,11 @@
 import React, { useContext, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
+import Button from "@mui/material/Button";
 import Title from "./Title";
 import UserContext from "../../utils/UserContext";
 import YamAPI from "../../utils/YamApi";
@@ -40,7 +42,7 @@ export default function Sales() {
         </TableHead>
         <TableBody>
           {/* add uuid later */}
-          {salesData.map((sale, idx) => {
+          {salesData.slice(0, 6).map((sale, idx) => {
             const totalReceived = sale.quantitySold * sale.salePrice;
             const adjustedTotalReceived = sale.businessPercentage
               ? totalReceived * (1 - sale.businessPercentage / 100)
@@ -60,9 +62,16 @@ export default function Sales() {
           })}
         </TableBody>
       </Table>
-      {/* <Link color="primary" href="#" onClick={preventDefault} sx={{ mt: 3 }}>
-        See more orders
-      </Link> */}
+
+      <Button
+        variant="outlined"
+        color="primary"
+        sx={{ mt: 3 }}
+        component={Link}
+        to={`/users/${currentUser.id}/sales`}
+      >
+        See more sales
+      </Button>
     </React.Fragment>
   );
 }
