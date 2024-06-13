@@ -4,7 +4,6 @@ import LandingPage from "../landingPage/LandingPage";
 import LoginForm from "../forms/LoginForm";
 import RegisterForm from "../forms/RegisterForm";
 import Dashboard from "../dashboard/Dashboard";
-import UserContext from "../../utils/UserContext";
 import ProtectedRoute from "./ProtectedRoute";
 import ProductsPage from "../products/ProductsPage";
 import ProductsItemPage from "../products/ProductsItemPage";
@@ -14,6 +13,9 @@ import UserProfile from "../profile/UserProfile";
 import ProductNewPage from "../products/ProductNewPage";
 import BusinessNewPage from "../businesses/BusinessNewPage";
 import BusinessUpdatePage from "../businesses/BusinessUpdatePage";
+import SaleNewPage from "../sales/SaleNewPage";
+import SaleUpdatePage from "../sales/SaleUpdatePage";
+import BusinessSaleUpdatePage from "../sales/BusinessSaleUpdatePage";
 
 export default function YamRoutes({
   login,
@@ -23,6 +25,12 @@ export default function YamRoutes({
   createBusiness,
   deleteBusiness,
   updateBusiness,
+  createSale,
+  deleteSale,
+  updateSale,
+  createBusinessSale,
+  deleteBusinessSale,
+  updateBusinessSale,
 }) {
   return (
     <Routes>
@@ -62,7 +70,34 @@ export default function YamRoutes({
           element={<BusinessUpdatePage updateBusiness={updateBusiness} />}
         />
         {/* -----Sales----- */}
-        <Route path="/users/:userId/sales" element={<SalesPage />} />
+        <Route
+          path="/users/:userId/sales"
+          element={
+            <SalesPage
+              deleteSale={deleteSale}
+              deleteBusinessSale={deleteBusinessSale}
+            />
+          }
+        />
+        <Route
+          path="/sales/add-sale"
+          element={
+            <SaleNewPage
+              createSale={createSale}
+              createBusinessSale={createBusinessSale}
+            />
+          }
+        />
+        <Route
+          path="/sales/:saleId/products/:productId"
+          element={<SaleUpdatePage updateSale={updateSale} />}
+        />
+        <Route
+          path="/businessSales/:businessSaleId/businesses/:businessId"
+          element={
+            <BusinessSaleUpdatePage updateBusinessSale={updateBusinessSale} />
+          }
+        />
         {/* -----User Profile----- */}
         <Route path="/users/:userId/profile" element={<UserProfile />} />
       </Route>

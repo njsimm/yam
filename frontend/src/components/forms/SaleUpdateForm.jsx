@@ -15,48 +15,72 @@ import { useNavigate, useParams } from "react-router-dom";
 import UserContext from "../../utils/UserContext";
 import YamAPI from "../../utils/YamApi";
 
-const BusinessSchema = Yup.object().shape({
-  name: Yup.string()
-    .max(100, "Name must be less than 100 characters")
-    .required("Name is required"),
-  contactInfo: Yup.string(),
+const SaleSchema = Yup.object().shape({
+  quantitySold: Yup.number()
+    .min(1, "Quantity sold must be at least 1")
+    .required("Quantity sold is required"),
+  salePrice: Yup.number()
+    .min(0, "Sale price must be at least 0")
+    .required("Sale price is required"),
+  saleDate: Yup.date().required("Sale date is required"),
 });
 
-const BusinessUpdateForm = ({ updateBusiness }) => {
+const formatDateForInput = (dateString) => {
+  const date = new Date(dateString);
+  const pad = (num) => num.toString().padStart(2, "0");
+
+  const year = date.getFullYear();
+  const month = pad(date.getMonth() + 1); // Months are zero-indexed
+  const day = pad(date.getDate());
+  const hours = pad(date.getHours());
+  const minutes = pad(date.getMinutes());
+
+  return `${year}-${month}-${day}T${hours}:${minutes}`;
+};
+
+const formatDateForApi = (dateString) => {
+  const date = new Date(dateString);
+  return date.toISOString();
+};
+
+const SalesUpdateForm = ({ updateSale }) => {
   const [errorMessage, setErrorMessage] = useState("");
   const [initialValues, setInitialValues] = useState({
-    name: "",
-    contactInfo: "",
+    quantitySold: "",
+    salePrice: "",
+    saleDate: "",
   });
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
   const { currentUser } = useContext(UserContext);
-  const { businessId } = useParams();
+  const { productId, saleId } = useParams();
 
   useEffect(() => {
-    async function fetchBusiness() {
-      if (currentUser && businessId) {
+    async function fetchSale() {
+      if (currentUser && productId && saleId) {
         try {
-          const business = await YamAPI.getBusinessById(
-            currentUser.id,
-            businessId
+          console.log(
+            "Fetching sale with productId:",
+            productId,
+            "saleId:",
+            saleId
           );
+          const sale = await YamAPI.getSaleById(productId, saleId);
           setInitialValues({
-            name: business.name || "",
-            contactInfo: business.contactInfo || "",
+            quantitySold: sale.quantitySold || "",
+            salePrice: sale.salePrice || "",
+            saleDate: formatDateForInput(sale.saleDate) || "",
           });
         } catch (err) {
-          console.error(
-            "BusinessUpdateForm fetchBusiness: problem loading business",
-            err
-          );
+          console.error("SalesUpdateForm fetchSale: problem loading sale", err);
+          setErrorMessage(`Error fetching sale: ${err.message}`);
         } finally {
           setIsLoading(false);
         }
       }
     }
-    fetchBusiness();
-  }, [currentUser, businessId]);
+    fetchSale();
+  }, [currentUser, productId, saleId]);
 
   if (isLoading) {
     return (
@@ -79,7 +103,7 @@ const BusinessUpdateForm = ({ updateBusiness }) => {
           }}
         >
           <Typography component="h1" variant="h5">
-            Update Business
+            Update Sale
           </Typography>
           {errorMessage && (
             <Alert severity="error" sx={{ width: "100%", mt: 2 }}>
@@ -89,25 +113,26 @@ const BusinessUpdateForm = ({ updateBusiness }) => {
           <Formik
             enableReinitialize
             initialValues={initialValues}
-            validationSchema={BusinessSchema}
+            validationSchema={SaleSchema}
             onSubmit={(values, { setSubmitting }) => {
               setSubmitting(true);
               setErrorMessage("");
 
-              const businessData = {
+              const updatedValues = {
                 ...values,
-                contactInfo: values.contactInfo ? values.contactInfo : null,
+                salePrice: Number(values.salePrice),
+                saleDate: formatDateForApi(values.saleDate),
               };
 
-              updateBusiness(businessId, businessData).then((response) => {
+              updateSale(productId, saleId, updatedValues).then((response) => {
                 setSubmitting(false);
                 if (response.success) {
-                  navigate(`/users/${currentUser.id}/businesses`);
+                  navigate(`/users/${currentUser.id}/sales`);
                 } else {
                   const errorMsg =
                     Array.isArray(response.errors) && response.errors.length > 0
                       ? response.errors.join(", ")
-                      : "Failed to update business. Please check your inputs and try again.";
+                      : "Failed to update sale. Please check your inputs and try again.";
                   setErrorMessage(errorMsg);
                 }
               });
@@ -125,26 +150,42 @@ const BusinessUpdateForm = ({ updateBusiness }) => {
                 <TextField
                   margin="normal"
                   fullWidth
-                  id="name"
-                  label="Name"
-                  name="name"
+                  id="quantitySold"
+                  label="Quantity Sold"
+                  name="quantitySold"
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  value={values.name}
-                  error={touched.name && Boolean(errors.name)}
-                  helperText={touched.name && errors.name}
+                  value={values.quantitySold}
+                  error={touched.quantitySold && Boolean(errors.quantitySold)}
+                  helperText={touched.quantitySold && errors.quantitySold}
                 />
                 <TextField
                   margin="normal"
                   fullWidth
-                  id="contactInfo"
-                  label="Contact Information"
-                  name="contactInfo"
+                  id="salePrice"
+                  label="Sale Price"
+                  name="salePrice"
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  value={values.contactInfo}
-                  error={touched.contactInfo && Boolean(errors.contactInfo)}
-                  helperText={touched.contactInfo && errors.contactInfo}
+                  value={values.salePrice}
+                  error={touched.salePrice && Boolean(errors.salePrice)}
+                  helperText={touched.salePrice && errors.salePrice}
+                />
+                <TextField
+                  margin="normal"
+                  fullWidth
+                  id="saleDate"
+                  label="Sale Date"
+                  name="saleDate"
+                  type="datetime-local"
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  value={values.saleDate}
+                  error={touched.saleDate && Boolean(errors.saleDate)}
+                  helperText={touched.saleDate && errors.saleDate}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
                 />
                 <Button
                   type="submit"
@@ -154,7 +195,7 @@ const BusinessUpdateForm = ({ updateBusiness }) => {
                   sx={{ mt: 3, mb: 2 }}
                   disabled={isSubmitting}
                 >
-                  Update Business
+                  Update Sale
                 </Button>
                 <Button
                   fullWidth
@@ -174,4 +215,4 @@ const BusinessUpdateForm = ({ updateBusiness }) => {
   );
 };
 
-export default BusinessUpdateForm;
+export default SalesUpdateForm;

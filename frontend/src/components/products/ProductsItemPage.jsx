@@ -69,6 +69,11 @@ const ProductsItemPage = () => {
     navigate(`/users/${currentUser.id}/products`);
   };
 
+  const formatDate = (dateString) => {
+    const options = { year: "numeric", month: "2-digit", day: "2-digit" };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  };
+
   if (loading) {
     return <CircularProgress />;
   }
@@ -127,13 +132,13 @@ const ProductsItemPage = () => {
                 Qty/Inventory: {product.quantity}
               </Typography>
               <Typography variant="body1" gutterBottom>
-                Created At: {product.productCreatedAt}
+                Created At: {formatDate(product.productCreatedAt)}
               </Typography>
               <Typography variant="body1" gutterBottom>
-                Last Updated At: {product.productUpdatedAt}
+                Last Updated At: {formatDate(product.productUpdatedAt)}
               </Typography>
               <Typography variant="body1" gutterBottom>
-                Quantity Updated At: {product.quantityUpdatedAt}
+                Quantity Updated At: {formatDate(product.quantityUpdatedAt)}
               </Typography>
               <Button
                 variant="outlined"

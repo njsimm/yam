@@ -161,6 +161,90 @@ function App() {
     }
   }
 
+  /** Handles creating a new sale */
+  async function createSale(productId, saleData) {
+    if (!currentUser) {
+      return { success: false, errors: ["No user logged in"] };
+    }
+    try {
+      await YamAPI.createSale(productId, saleData);
+      return { success: true };
+    } catch (errors) {
+      console.error("createSale failed", errors);
+      return { success: false, errors };
+    }
+  }
+
+  /** Handles deleting a sale */
+  async function deleteSale(productId, saleId) {
+    if (!currentUser) {
+      return { success: false, errors: ["No user logged in"] };
+    }
+    try {
+      await YamAPI.deleteSale(productId, saleId);
+      return { success: true };
+    } catch (errors) {
+      console.error("deleteSale failed", errors);
+      return { success: false, errors };
+    }
+  }
+
+  /** Handles updating a sale */
+  async function updateSale(productId, saleId, updateData) {
+    if (!currentUser) {
+      return { success: false, errors: ["No user logged in"] };
+    }
+    try {
+      await YamAPI.updateSale(productId, saleId, updateData);
+      return { success: true };
+    } catch (errors) {
+      console.error("updateSale failed", errors);
+      return { success: false, errors };
+    }
+  }
+
+  /** Handles creating a new business sale */
+  async function createBusinessSale(businessId, businessSaleData) {
+    if (!currentUser) {
+      return { success: false, errors: ["No user logged in"] };
+    }
+    try {
+      await YamAPI.createBusinessSale(businessId, businessSaleData);
+      return { success: true };
+    } catch (errors) {
+      console.error("createBusinessSale failed", errors);
+      return { success: false, errors };
+    }
+  }
+
+  /** Handles deleting a business sale */
+  async function deleteBusinessSale(businessId, businessSaleId) {
+    if (!currentUser) {
+      return { success: false, errors: ["No user logged in"] };
+    }
+    try {
+      await YamAPI.deleteBusinessSale(businessId, businessSaleId);
+      return { success: true };
+    } catch (errors) {
+      console.error("deleteBusinessSale failed", errors);
+      return { success: false, errors };
+    }
+  }
+
+  /** Handles updating a business sale */
+  async function updateBusinessSale(businessId, businessSaleId, updateData) {
+    if (!currentUser) {
+      return { success: false, errors: ["No user logged in"] };
+    }
+    try {
+      await YamAPI.updateBusinessSale(businessId, businessSaleId, updateData);
+      return { success: true };
+    } catch (errors) {
+      console.error("updateBusinessSale failed", errors);
+      return { success: false, errors };
+    }
+  }
+
   const [mode, setMode] = useState("light");
 
   const theme = useMemo(
@@ -187,6 +271,12 @@ function App() {
             createBusiness={createBusiness}
             deleteBusiness={deleteBusiness}
             updateBusiness={updateBusiness}
+            createSale={createSale}
+            deleteSale={deleteSale}
+            updateSale={updateSale}
+            createBusinessSale={createBusinessSale}
+            deleteBusinessSale={deleteBusinessSale}
+            updateBusinessSale={updateBusinessSale}
           />
         </ThemeProvider>
       </UserContext.Provider>

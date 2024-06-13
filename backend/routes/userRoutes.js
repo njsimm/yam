@@ -200,7 +200,7 @@ router.get(
  *
  * Get all sales for a specific user, including direct sales and business sales.
  *
- * Returns [{name, price, cost, sku, type, quantitySold, salePrice, saleDate, businessName, contactInfo, businessPercentage}, ...]
+ * Returns [{saleId, businessSaleId, productId, businessId, name, price, cost, sku, type, quantitySold, salePrice, saleDate, businessName, contactInfo, businessPercentage}, ...]
  *
  * Authorization required: admin or same user as id
  **/

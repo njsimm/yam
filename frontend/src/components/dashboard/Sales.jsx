@@ -9,6 +9,7 @@ import Button from "@mui/material/Button";
 import Title from "./Title";
 import UserContext from "../../utils/UserContext";
 import YamAPI from "../../utils/YamApi";
+import Box from "@mui/material/Box";
 
 export default function Sales() {
   const { currentUser } = useContext(UserContext);
@@ -27,42 +28,58 @@ export default function Sales() {
     }
     fetchSales();
   }, [currentUser]);
+
+  const formatDate = (dateString) => {
+    const options = { year: "numeric", month: "2-digit", day: "2-digit" };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  };
+
+  const calculateProfit = (sale) => {
+    const { salePrice, quantitySold, cost, businessPercentage } = sale;
+    const revenue = salePrice * quantitySold;
+    const costToMake = cost * quantitySold;
+    const profit = revenue - costToMake;
+
+    if (businessPercentage) {
+      return (profit * (1 - businessPercentage / 100)).toFixed(2);
+    }
+    return profit.toFixed(2);
+  };
+
   return (
     <React.Fragment>
       <Title>Recent Sales</Title>
-      <Table size="small">
-        <TableHead>
-          <TableRow>
-            <TableCell>Date</TableCell>
-            <TableCell>Product</TableCell>
-            <TableCell>Quantity Sold</TableCell>
-            <TableCell>Sale Price</TableCell>
-            <TableCell align="right">Total Recieved</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {/* add uuid later */}
-          {salesData.slice(0, 6).map((sale, idx) => {
-            const totalReceived = sale.quantitySold * sale.salePrice;
-            const adjustedTotalReceived = sale.businessPercentage
-              ? totalReceived * (1 - sale.businessPercentage / 100)
-              : totalReceived;
+      <Box sx={{ overflowX: "auto" }}>
+        <Table size="small">
+          <TableHead>
+            <TableRow>
+              <TableCell>Date</TableCell>
+              <TableCell>Product</TableCell>
+              <TableCell>Quantity Sold</TableCell>
+              <TableCell>Sale Price</TableCell>
+              <TableCell>Cost to Make</TableCell>
+              <TableCell align="right">Profit</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {salesData.slice(0, 6).map((sale, idx) => {
+              const costToMake = sale.quantitySold * sale.cost;
+              const profit = calculateProfit(sale);
 
-            return (
-              <TableRow key={idx}>
-                <TableCell>{sale.saleDate}</TableCell>
-                <TableCell>{sale.name}</TableCell>
-                <TableCell>{sale.quantitySold}</TableCell>
-                <TableCell>{sale.salePrice}</TableCell>
-                <TableCell align="right">{`$${adjustedTotalReceived.toFixed(
-                  2
-                )}`}</TableCell>
-              </TableRow>
-            );
-          })}
-        </TableBody>
-      </Table>
-
+              return (
+                <TableRow key={idx}>
+                  <TableCell>{formatDate(sale.saleDate)}</TableCell>
+                  <TableCell>{sale.name}</TableCell>
+                  <TableCell>{sale.quantitySold}</TableCell>
+                  <TableCell>{sale.salePrice}</TableCell>
+                  <TableCell>{`$${costToMake.toFixed(2)}`}</TableCell>
+                  <TableCell align="right">{`$${profit}`}</TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
+      </Box>
       <Button
         variant="outlined"
         color="primary"

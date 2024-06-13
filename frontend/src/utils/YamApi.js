@@ -191,12 +191,26 @@ class YamAPI {
     );
   }
 
+  /** static async getAllSalesInfo
+   *
+   * Retrieves all sales information for a given user.
+   */
+  static async getAllSalesInfo(userId) {
+    const response = await this.request(`users/${userId}/allSalesInfo`);
+    return response.sales;
+  }
+
   /** static async createSale
    *
    * Creates a new sale.
    */
   static async createSale(productId, saleData) {
-    return await this.request(`products/${productId}/sales`, saleData, "post");
+    const response = await this.request(
+      `products/${productId}/sales`,
+      saleData,
+      "post"
+    );
+    return response.sale;
   }
 
   /** static async getAllSales
@@ -212,7 +226,10 @@ class YamAPI {
    * Retrieves a sale by ID for a given product.
    */
   static async getSaleById(productId, saleId) {
-    return await this.request(`products/${productId}/sales/${saleId}`);
+    const response = await this.request(
+      `products/${productId}/sales/${saleId}`
+    );
+    return response.sale;
   }
 
   /** static async updateSale
@@ -220,11 +237,12 @@ class YamAPI {
    * Updates a sale's information.
    */
   static async updateSale(productId, saleId, updateData) {
-    return await this.request(
+    const response = await this.request(
       `products/${productId}/sales/${saleId}`,
       updateData,
       "patch"
     );
+    return response.sale;
   }
 
   /** static async deleteSale
@@ -302,11 +320,12 @@ class YamAPI {
    * Creates a new business sale.
    */
   static async createBusinessSale(businessId, businessSaleData) {
-    return await this.request(
+    const response = await this.request(
       `businesses/${businessId}/businessSales`,
       businessSaleData,
       "post"
     );
+    return response.businessSale;
   }
 
   /** static async getAllBusinessSales
@@ -322,9 +341,10 @@ class YamAPI {
    * Retrieves a business sale by ID for a given business.
    */
   static async getBusinessSaleById(businessId, businessSaleId) {
-    return await this.request(
+    const response = await this.request(
       `businesses/${businessId}/businessSales/${businessSaleId}`
     );
+    return response.businessSale;
   }
 
   /** static async updateBusinessSale
@@ -332,11 +352,12 @@ class YamAPI {
    * Updates a business sale's information.
    */
   static async updateBusinessSale(businessId, businessSaleId, updateData) {
-    return await this.request(
+    const response = await this.request(
       `businesses/${businessId}/businessSales/${businessSaleId}`,
       updateData,
       "patch"
     );
+    return response.businessSale;
   }
 
   /** static async deleteBusinessSale

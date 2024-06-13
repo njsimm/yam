@@ -45,6 +45,11 @@ export default function BusinessesList({ deleteBusiness }) {
     }
   };
 
+  const formatDate = (dateString) => {
+    const options = { year: "numeric", month: "2-digit", day: "2-digit" };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  };
+
   return (
     <Grid item xs={12}>
       <Paper sx={{ p: 2, display: "flex", flexDirection: "column" }}>
@@ -65,48 +70,52 @@ export default function BusinessesList({ deleteBusiness }) {
             Add
           </Button>
         </Box>
-        <Table size="small">
-          <TableHead>
-            <TableRow>
-              <TableCell align="center">Name</TableCell>
-              <TableCell align="center">Contact Info</TableCell>
-              <TableCell align="center">Created At</TableCell>
-              <TableCell align="center">Actions</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {businessesData.map((business, idx) => (
-              <TableRow key={idx}>
-                <TableCell align="center">{business.name}</TableCell>
-                <TableCell align="center">{business.contactInfo}</TableCell>
-                <TableCell align="center">{business.createdAt}</TableCell>
-                <TableCell align="center">
-                  <Box
-                    sx={{ display: "flex", justifyContent: "center", gap: 1 }}
-                  >
-                    <Button
-                      variant="outlined"
-                      color="primary"
-                      component={Link}
-                      to={`/businesses/${business.id}/update`}
-                      size="small"
-                    >
-                      Edit
-                    </Button>
-                    <Button
-                      variant="outlined"
-                      color="primary"
-                      onClick={() => handleDelete(business.id)}
-                      size="small"
-                    >
-                      Delete
-                    </Button>
-                  </Box>
-                </TableCell>
+        <Box sx={{ overflowX: "auto" }}>
+          <Table size="small">
+            <TableHead>
+              <TableRow>
+                <TableCell align="center">Name</TableCell>
+                <TableCell align="center">Contact Info</TableCell>
+                <TableCell align="center">Created At</TableCell>
+                <TableCell align="center">Actions</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHead>
+            <TableBody>
+              {businessesData.map((business, idx) => (
+                <TableRow key={idx}>
+                  <TableCell align="center">{business.name}</TableCell>
+                  <TableCell align="center">{business.contactInfo}</TableCell>
+                  <TableCell align="center">
+                    {formatDate(business.createdAt)}
+                  </TableCell>
+                  <TableCell align="center">
+                    <Box
+                      sx={{ display: "flex", justifyContent: "center", gap: 1 }}
+                    >
+                      <Button
+                        variant="outlined"
+                        color="primary"
+                        component={Link}
+                        to={`/businesses/${business.id}/update`}
+                        size="small"
+                      >
+                        Edit
+                      </Button>
+                      <Button
+                        variant="outlined"
+                        color="primary"
+                        onClick={() => handleDelete(business.id)}
+                        size="small"
+                      >
+                        Delete
+                      </Button>
+                    </Box>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </Box>
       </Paper>
     </Grid>
   );

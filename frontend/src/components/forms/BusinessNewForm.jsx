@@ -105,6 +105,15 @@ const BusinessNewForm = ({ createBusiness }) => {
                 >
                   Add Business
                 </Button>
+                <Button
+                  fullWidth
+                  variant="outlined"
+                  color="secondary"
+                  sx={{ mb: 2 }}
+                  onClick={() => navigate(-1)}
+                >
+                  Cancel
+                </Button>
               </Form>
             )}
           </Formik>

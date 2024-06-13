@@ -1,19 +1,19 @@
 import React from "react";
 import ProtectedLayout from "../layout/ProtectedLayout";
+import SaleNewForm from "../forms/SaleNewForm";
 import Grid from "@mui/material/Grid";
-import SalesList from "./SalesList";
 
-const SalesPage = ({ deleteSale, deleteBusinessSale }) => {
+const SaleNewPage = ({ createSale, createBusinessSale }) => {
   return (
     <ProtectedLayout title="Sales">
       <Grid container spacing={3}>
-        <SalesList
-          deleteSale={deleteSale}
-          deleteBusinessSale={deleteBusinessSale}
+        <SaleNewForm
+          createSale={createSale}
+          createBusinessSale={createBusinessSale}
         />
       </Grid>
     </ProtectedLayout>
   );
 };
 
-export default SalesPage;
+export default SaleNewPage;

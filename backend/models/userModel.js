@@ -276,13 +276,17 @@ class User {
 
   /** Get all sales for a user, including direct sales and business sales.
    *
-   * Returns [{name, price, cost, sku, type, quantitySold, salePrice, saleDate, businessName, contactInfo, businessPercentage}, ...]
+   * Returns [{saleId, businessSaleId, productId, businessId, name, price, cost, sku, type, quantitySold, salePrice, saleDate, businessName, contactInfo, businessPercentage}, ...]
    *
    * Ordered by saleDate
    **/
   static async getAllSalesInfo(id) {
     const results = await db.query(
       `SELECT 
+       s.id AS "saleId",
+       NULL AS "businessSaleId",
+       s.product_id AS "productId",
+       NULL AS "businessId",
        p.name AS "name",
        p.price AS "price",
        p.cost AS "cost",
@@ -299,6 +303,10 @@ class User {
      WHERE s.user_id = $1
      UNION
      SELECT 
+       NULL AS "saleId",
+       bs.id AS "businessSaleId",
+       bs.product_id AS "productId",
+       bs.business_id AS "businessId",
        p.name AS "name",
        p.price AS "price",
        p.cost AS "cost",
