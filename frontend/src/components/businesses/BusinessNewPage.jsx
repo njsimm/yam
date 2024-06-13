@@ -1,16 +1,16 @@
 import React from "react";
 import ProtectedLayout from "../layout/ProtectedLayout";
+import BusinessNewForm from "../forms/BusinessNewForm";
 import Grid from "@mui/material/Grid";
-import BusinessesList from "./BusinessesList";
 
-const BusinessesPage = ({ deleteBusiness }) => {
+const BusinessNewPage = ({ createBusiness }) => {
   return (
     <ProtectedLayout title="Businesses">
       <Grid container spacing={3}>
-        <BusinessesList deleteBusiness={deleteBusiness} />
+        <BusinessNewForm createBusiness={createBusiness} />
       </Grid>
     </ProtectedLayout>
   );
 };
 
-export default BusinessesPage;
+export default BusinessNewPage;

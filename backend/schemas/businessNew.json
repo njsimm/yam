@@ -17,7 +17,7 @@
       "maxLength": 100
     },
     "contactInfo": {
-      "type": "string"
+      "type": ["string", "null"]
     },
     "createdAt": {
       "type": "string",

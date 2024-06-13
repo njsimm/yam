@@ -12,12 +12,17 @@ import BusinessesPage from "../businesses/BusinessesPage";
 import SalesPage from "../sales/SalesPage";
 import UserProfile from "../profile/UserProfile";
 import ProductNewPage from "../products/ProductNewPage";
+import BusinessNewPage from "../businesses/BusinessNewPage";
+import BusinessUpdatePage from "../businesses/BusinessUpdatePage";
 
 export default function YamRoutes({
   login,
   register,
   createProduct,
   deleteProduct,
+  createBusiness,
+  deleteBusiness,
+  updateBusiness,
 }) {
   return (
     <Routes>
@@ -29,6 +34,8 @@ export default function YamRoutes({
       />
       <Route element={<ProtectedRoute />}>
         <Route path="/users/dashboard" element={<Dashboard />} />
+
+        {/* -----Products----- */}
         <Route
           path="/users/:userId/products"
           element={<ProductsPage deleteProduct={deleteProduct} />}
@@ -41,9 +48,22 @@ export default function YamRoutes({
           path="/products/add-product"
           element={<ProductNewPage createProduct={createProduct} />}
         />
-
-        <Route path="/users/:userId/businesses" element={<BusinessesPage />} />
+        {/* -----Businesses----- */}
+        <Route
+          path="/users/:userId/businesses"
+          element={<BusinessesPage deleteBusiness={deleteBusiness} />}
+        />
+        <Route
+          path="/businesses/add-business"
+          element={<BusinessNewPage createBusiness={createBusiness} />}
+        />
+        <Route
+          path="/businesses/:businessId/update"
+          element={<BusinessUpdatePage updateBusiness={updateBusiness} />}
+        />
+        {/* -----Sales----- */}
         <Route path="/users/:userId/sales" element={<SalesPage />} />
+        {/* -----User Profile----- */}
         <Route path="/users/:userId/profile" element={<UserProfile />} />
       </Route>
       {/**temp 404 page */}

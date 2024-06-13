@@ -244,11 +244,12 @@ class YamAPI {
    * Creates a new business.
    */
   static async createBusiness(userId, businessData) {
-    return await this.request(
+    const response = await this.request(
       `users/${userId}/businesses`,
       businessData,
       "post"
     );
+    return response.business;
   }
 
   /** static async getAllBusinesses
@@ -256,7 +257,8 @@ class YamAPI {
    * Retrieves all businesses for a given user.
    */
   static async getAllBusinesses(userId) {
-    return await this.request(`users/${userId}/businesses`);
+    const response = await this.request(`users/${userId}/businesses`);
+    return response.businesses;
   }
 
   /** static async getBusinessById
@@ -264,7 +266,10 @@ class YamAPI {
    * Retrieves a business by ID for a given user.
    */
   static async getBusinessById(userId, businessId) {
-    return await this.request(`users/${userId}/businesses/${businessId}`);
+    const response = await this.request(
+      `users/${userId}/businesses/${businessId}`
+    );
+    return response.business;
   }
 
   /** static async updateBusiness
@@ -272,11 +277,12 @@ class YamAPI {
    * Updates a business's information.
    */
   static async updateBusiness(userId, businessId, updateData) {
-    return await this.request(
+    const response = await this.request(
       `users/${userId}/businesses/${businessId}`,
       updateData,
       "patch"
     );
+    return response.business;
   }
 
   /** static async deleteBusiness

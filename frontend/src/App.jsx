@@ -119,6 +119,48 @@ function App() {
     }
   }
 
+  /** Handles creating a new business */
+  async function createBusiness(businessData) {
+    if (!currentUser) {
+      return { success: false, errors: ["No user logged in"] };
+    }
+    try {
+      await YamAPI.createBusiness(currentUser.id, businessData);
+      return { success: true };
+    } catch (errors) {
+      console.error("createBusiness failed", errors);
+      return { success: false, errors };
+    }
+  }
+
+  /** Handles deleting a business */
+  async function deleteBusiness(businessId) {
+    if (!currentUser) {
+      return { success: false, errors: ["No user logged in"] };
+    }
+    try {
+      await YamAPI.deleteBusiness(currentUser.id, businessId);
+      return { success: true };
+    } catch (errors) {
+      console.error("deleteBusiness failed", errors);
+      return { success: false, errors };
+    }
+  }
+
+  /** Handles updating a business */
+  async function updateBusiness(businessId, updateData) {
+    if (!currentUser) {
+      return { success: false, errors: ["No user logged in"] };
+    }
+    try {
+      await YamAPI.updateBusiness(currentUser.id, businessId, updateData);
+      return { success: true };
+    } catch (errors) {
+      console.error("updateBusiness failed", errors);
+      return { success: false, errors };
+    }
+  }
+
   const [mode, setMode] = useState("light");
 
   const theme = useMemo(
@@ -142,6 +184,9 @@ function App() {
             register={register}
             createProduct={createProduct}
             deleteProduct={deleteProduct}
+            createBusiness={createBusiness}
+            deleteBusiness={deleteBusiness}
+            updateBusiness={updateBusiness}
           />
         </ThemeProvider>
       </UserContext.Provider>
