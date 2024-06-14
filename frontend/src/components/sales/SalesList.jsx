@@ -68,13 +68,13 @@ export default function SalesList({ deleteSale, deleteBusinessSale }) {
 
   const calculateProfit = (sale) => {
     const { salePrice, quantitySold, cost, businessPercentage } = sale;
-    const revenue = salePrice * quantitySold;
+    const totalReceived = salePrice * quantitySold;
+    const consignmentShare = businessPercentage
+      ? totalReceived * (businessPercentage / 100)
+      : 0;
+    const yourShare = totalReceived - consignmentShare;
     const costToMake = cost * quantitySold;
-    const profit = revenue - costToMake;
-
-    if (businessPercentage) {
-      return (profit * (1 - businessPercentage / 100)).toFixed(2);
-    }
+    const profit = yourShare - costToMake;
     return profit.toFixed(2);
   };
 

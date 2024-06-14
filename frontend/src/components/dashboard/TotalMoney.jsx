@@ -15,12 +15,13 @@ export default function TotalMoney() {
           let sales = await YamAPI.getAllSalesInfo(currentUser.id);
           let total = sales.reduce((acc, sale) => {
             const totalReceived = sale.quantitySold * sale.salePrice;
+            const consignmentShare = sale.businessPercentage
+              ? totalReceived * (sale.businessPercentage / 100)
+              : 0;
+            const yourShare = totalReceived - consignmentShare;
             const costToMake = sale.quantitySold * sale.cost;
-            const profit = totalReceived - costToMake;
-            const adjustedProfit = sale.businessPercentage
-              ? profit * (1 - sale.businessPercentage / 100)
-              : profit;
-            return acc + adjustedProfit;
+            const profit = yourShare - costToMake;
+            return acc + profit;
           }, 0);
           setTotalMoney(total);
         } catch (err) {
