@@ -245,6 +245,35 @@ function App() {
     }
   }
 
+  /** Handles updating a user */
+  async function updateUser(updateData) {
+    if (!currentUser) {
+      return { success: false, errors: ["No user logged in"] };
+    }
+    try {
+      await YamAPI.updateUser(currentUser.id, updateData);
+      return { success: true };
+    } catch (errors) {
+      console.error("updateUser failed", errors);
+      return { success: false, errors };
+    }
+  }
+
+  /** Handles deleting a user */
+  async function deleteUser() {
+    if (!currentUser) {
+      return { success: false, errors: ["No user logged in"] };
+    }
+    try {
+      await YamAPI.deleteUser(currentUser.id);
+      logout();
+      return { success: true };
+    } catch (errors) {
+      console.error("deleteUser failed", errors);
+      return { success: false, errors };
+    }
+  }
+
   const [mode, setMode] = useState("light");
 
   const theme = useMemo(
@@ -277,6 +306,8 @@ function App() {
             createBusinessSale={createBusinessSale}
             deleteBusinessSale={deleteBusinessSale}
             updateBusinessSale={updateBusinessSale}
+            updateUser={updateUser}
+            deleteUser={deleteUser}
           />
         </ThemeProvider>
       </UserContext.Provider>

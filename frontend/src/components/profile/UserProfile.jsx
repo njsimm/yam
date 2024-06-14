@@ -1,10 +1,14 @@
 import React from "react";
 import ProtectedLayout from "../layout/ProtectedLayout";
+import Grid from "@mui/material/Grid";
+import UserProfileInfo from "./UserProfileInfo";
 
-const UserProfile = () => {
+const UserProfile = ({ updateUser, deleteUser }) => {
   return (
-    <ProtectedLayout title="Profile">
-      <h1>You Profile Page</h1>
+    <ProtectedLayout title="User Profile">
+      <Grid container spacing={3}>
+        <UserProfileInfo updateUser={updateUser} deleteUser={deleteUser} />
+      </Grid>
     </ProtectedLayout>
   );
 };

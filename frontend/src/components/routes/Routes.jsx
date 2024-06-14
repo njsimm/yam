@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import { Routes, Route } from "react-router-dom";
 import LandingPage from "../landingPage/LandingPage";
 import LoginForm from "../forms/LoginForm";
@@ -16,6 +16,7 @@ import BusinessUpdatePage from "../businesses/BusinessUpdatePage";
 import SaleNewPage from "../sales/SaleNewPage";
 import SaleUpdatePage from "../sales/SaleUpdatePage";
 import BusinessSaleUpdatePage from "../sales/BusinessSaleUpdatePage";
+import ChangePassword from "../profile/ChangePassword";
 
 export default function YamRoutes({
   login,
@@ -31,6 +32,8 @@ export default function YamRoutes({
   createBusinessSale,
   deleteBusinessSale,
   updateBusinessSale,
+  updateUser,
+  deleteUser,
 }) {
   return (
     <Routes>
@@ -99,7 +102,16 @@ export default function YamRoutes({
           }
         />
         {/* -----User Profile----- */}
-        <Route path="/users/:userId/profile" element={<UserProfile />} />
+        <Route
+          path="/users/:userId/profile"
+          element={
+            <UserProfile updateUser={updateUser} deleteUser={deleteUser} />
+          }
+        />
+        <Route
+          path="/users/:userId/change-password"
+          element={<ChangePassword updateUser={updateUser} />}
+        />
       </Route>
       {/**temp 404 page */}
       <Route path="*" element={<h1>404 error</h1>} />

@@ -108,7 +108,8 @@ class YamAPI {
    * Updates a user's information.
    */
   static async updateUser(userId, updateData) {
-    return await this.request(`users/${userId}`, updateData, "patch");
+    const response = await this.request(`users/${userId}`, updateData, "patch");
+    return response.user;
   }
 
   /** static async deleteUser
