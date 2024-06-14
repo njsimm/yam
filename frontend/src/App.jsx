@@ -1,5 +1,10 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { ThemeProvider, CssBaseline } from "@mui/material";
+import {
+  ThemeProvider,
+  CssBaseline,
+  CircularProgress,
+  Box,
+} from "@mui/material";
 import { BrowserRouter } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import { lightTheme, darkTheme } from "./theme";
@@ -7,7 +12,6 @@ import YamRoutes from "./components/routes/Routes";
 import useLocalStorage from "./hooks/useLocalStorage";
 import YamAPI from "./utils/YamApi";
 import UserContext from "./utils/UserContext";
-import Loading from "./components/loading/Loading";
 
 /** The key name for storing JWT token in localStorage. The value for this key will be the JWT.
  *
@@ -284,7 +288,21 @@ function App() {
   const toggleTheme = () => {
     setMode((prevMode) => (prevMode === "light" ? "dark" : "light"));
   };
-  if (!infoLoaded) return <Loading />;
+
+  if (!infoLoaded)
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
+
   return (
     <BrowserRouter>
       <UserContext.Provider

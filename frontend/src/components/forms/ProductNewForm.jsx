@@ -65,7 +65,6 @@ const ProductNewForm = ({ createProduct }) => {
               setSubmitting(true);
               setErrorMessage("");
 
-              // Convert fields to their respective types
               const productData = {
                 ...values,
                 price: values.price ? parseFloat(values.price) : null,
@@ -192,6 +191,15 @@ const ProductNewForm = ({ createProduct }) => {
                   disabled={isSubmitting}
                 >
                   Add Product
+                </Button>
+                <Button
+                  fullWidth
+                  variant="outlined"
+                  color="secondary"
+                  sx={{ mb: 2 }}
+                  onClick={() => navigate(-1)}
+                >
+                  Cancel
                 </Button>
               </Form>
             )}
