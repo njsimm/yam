@@ -17,6 +17,8 @@ import SaleNewPage from "../sales/SaleNewPage";
 import SaleUpdatePage from "../sales/SaleUpdatePage";
 import BusinessSaleUpdatePage from "../sales/BusinessSaleUpdatePage";
 import ChangePassword from "../profile/ChangePassword";
+import NotAuthorized from "./NotAuthorized";
+import NotFound from "./NotFound";
 
 export default function YamRoutes({
   login,
@@ -37,12 +39,15 @@ export default function YamRoutes({
 }) {
   return (
     <Routes>
+      {/* -----General Routes----- */}
       <Route path="/" element={<LandingPage />} />
       <Route path="/users/login" element={<LoginForm login={login} />} />
       <Route
         path="/users/register"
         element={<RegisterForm register={register} />}
       />
+
+      {/* -----Protected Routes----- */}
       <Route element={<ProtectedRoute />}>
         <Route path="/users/dashboard" element={<Dashboard />} />
 
@@ -59,6 +64,7 @@ export default function YamRoutes({
           path="/products/add-product"
           element={<ProductNewPage createProduct={createProduct} />}
         />
+
         {/* -----Businesses----- */}
         <Route
           path="/users/:userId/businesses"
@@ -72,6 +78,7 @@ export default function YamRoutes({
           path="/businesses/:businessId/update"
           element={<BusinessUpdatePage updateBusiness={updateBusiness} />}
         />
+
         {/* -----Sales----- */}
         <Route
           path="/users/:userId/sales"
@@ -101,6 +108,7 @@ export default function YamRoutes({
             <BusinessSaleUpdatePage updateBusinessSale={updateBusinessSale} />
           }
         />
+
         {/* -----User Profile----- */}
         <Route
           path="/users/:userId/profile"
@@ -113,8 +121,10 @@ export default function YamRoutes({
           element={<ChangePassword updateUser={updateUser} />}
         />
       </Route>
-      {/**temp 404 page */}
-      <Route path="*" element={<h1>404 error</h1>} />
+
+      {/* -----Misc.----- */}
+      <Route path="/not-authorized" element={<NotAuthorized />} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 }

@@ -92,7 +92,8 @@ class YamAPI {
    * Retrieves all users.
    */
   static async getAllUsers() {
-    return await this.request("users");
+    const response = await this.request("users");
+    return response.users;
   }
 
   /** static async getUserById
@@ -100,7 +101,8 @@ class YamAPI {
    * Retrieves a user by ID.
    */
   static async getUserById(userId) {
-    return await this.request(`users/${userId}`);
+    const response = await this.request(`users/${userId}`);
+    return response.user;
   }
 
   /** static async updateUser
@@ -125,7 +127,8 @@ class YamAPI {
    * Retrieves all sales for a specific user.
    */
   static async getUserSales(userId) {
-    return await this.request(`users/${userId}/sales`);
+    const response = await this.request(`users/${userId}/sales`);
+    return response.sales;
   }
 
   /** static async getUserBusinessSales
@@ -133,7 +136,8 @@ class YamAPI {
    * Retrieves all business sales for a specific user.
    */
   static async getUserBusinessSales(userId) {
-    return await this.request(`users/${userId}/businessSales`);
+    const response = await this.request(`users/${userId}/businessSales`);
+    return response.businessSales;
   }
 
   /** static async createProduct
@@ -219,7 +223,8 @@ class YamAPI {
    * Retrieves all sales for a given product.
    */
   static async getAllSales(productId) {
-    return await this.request(`products/${productId}/sales`);
+    const response = await this.request(`products/${productId}/sales`);
+    return response.sales;
   }
 
   /** static async getSaleById
@@ -333,8 +338,9 @@ class YamAPI {
    *
    * Retrieves all business sales for a given business.
    */
-  static async getAllBusinessSales(businessId) {
-    return await this.request(`businesses/${businessId}/businessSales`);
+  static async getAllBusinesses(userId) {
+    const response = await this.request(`users/${userId}/businesses`);
+    return response.businesses;
   }
 
   /** static async getBusinessSaleById
