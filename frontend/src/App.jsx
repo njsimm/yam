@@ -23,6 +23,7 @@ function App() {
   const [infoLoaded, setInfoLoaded] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
   const [token, setToken] = useLocalStorage(TOKEN_STORAGE_ID);
+  const [mode, setMode] = useLocalStorage("theme", "light");
 
   console.debug(
     "App",
@@ -278,12 +279,7 @@ function App() {
     }
   }
 
-  const [mode, setMode] = useState("light");
-
-  const theme = useMemo(
-    () => (mode === "light" ? lightTheme : darkTheme),
-    [mode]
-  );
+  const theme = mode === "light" ? lightTheme : darkTheme;
 
   const toggleTheme = () => {
     setMode((prevMode) => (prevMode === "light" ? "dark" : "light"));
