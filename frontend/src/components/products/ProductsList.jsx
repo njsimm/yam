@@ -52,7 +52,10 @@ export default function ProductsList({ deleteProduct }) {
 
   return (
     <Grid item xs={12}>
-      <Paper sx={{ p: 2, display: "flex", flexDirection: "column" }}>
+      <Paper
+        elevation={10}
+        sx={{ p: 2, display: "flex", flexDirection: "column" }}
+      >
         <Box
           sx={{
             display: "flex",
@@ -62,7 +65,7 @@ export default function ProductsList({ deleteProduct }) {
         >
           <Title>Product List</Title>
           <Button
-            variant="outlined"
+            variant="contained"
             color="primary"
             component={Link}
             to="/products/add-product"
@@ -103,7 +106,7 @@ export default function ProductsList({ deleteProduct }) {
                       sx={{ display: "flex", justifyContent: "center", gap: 1 }}
                     >
                       <Button
-                        variant="outlined"
+                        variant="contained"
                         color="primary"
                         component={Link}
                         to={`${product.id}`}
@@ -112,7 +115,7 @@ export default function ProductsList({ deleteProduct }) {
                         View Details
                       </Button>
                       <Button
-                        variant="outlined"
+                        variant="contained"
                         color="primary"
                         onClick={() => handleDelete(product.id)}
                         size="small"

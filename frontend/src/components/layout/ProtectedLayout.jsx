@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { styled } from "@mui/material/styles";
 import MuiDrawer from "@mui/material/Drawer";
 import Box from "@mui/material/Box";
@@ -15,6 +15,7 @@ import WbSunnyRoundedIcon from "@mui/icons-material/WbSunnyRounded";
 import ModeNightRoundedIcon from "@mui/icons-material/ModeNightRounded";
 import { mainListItems, secondaryListItems } from "./ListItems";
 import UserContext from "../../utils/UserContext";
+import SidebarContext from "../../utils/SidebarContext";
 
 const drawerWidth = 240;
 
@@ -64,28 +65,25 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 const ProtectedLayout = ({ children, title }) => {
-  const { mode, toggleTheme } = React.useContext(UserContext);
-  const [open, setOpen] = React.useState(true);
-  const toggleDrawer = () => {
-    setOpen(!open);
-  };
+  const { mode, toggleTheme } = useContext(UserContext);
+  const { isSidebarOpen, toggleSidebar } = useContext(SidebarContext);
 
   return (
     <Box sx={{ display: "flex" }}>
-      <AppBar position="absolute" open={open}>
+      <AppBar position="absolute" open={isSidebarOpen}>
         <Toolbar
           sx={{
-            pr: "24px", // keep right padding when drawer closed
+            pr: "24px",
           }}
         >
           <IconButton
             edge="start"
             color="inherit"
             aria-label="open drawer"
-            onClick={toggleDrawer}
+            onClick={toggleSidebar}
             sx={{
               marginRight: "36px",
-              ...(open && { display: "none" }),
+              ...(isSidebarOpen && { display: "none" }),
             }}
           >
             <MenuIcon />
@@ -112,7 +110,7 @@ const ProtectedLayout = ({ children, title }) => {
           </IconButton>
         </Toolbar>
       </AppBar>
-      <Drawer variant="permanent" open={open}>
+      <Drawer variant="permanent" open={isSidebarOpen}>
         <Toolbar
           sx={{
             display: "flex",
@@ -121,7 +119,7 @@ const ProtectedLayout = ({ children, title }) => {
             px: [1],
           }}
         >
-          <IconButton onClick={toggleDrawer}>
+          <IconButton onClick={toggleSidebar}>
             <ChevronLeftIcon />
           </IconButton>
         </Toolbar>

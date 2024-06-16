@@ -24,7 +24,7 @@ const NotFound = () => {
           height: "80vh",
         }}
       >
-        <Paper sx={{ p: 4, textAlign: "center" }}>
+        <Paper elevation={10} sx={{ p: 4, textAlign: "center" }}>
           <Typography variant="h3" component="h1" gutterBottom>
             404 - Not Found
           </Typography>

@@ -98,7 +98,10 @@ export default function SalesList({ deleteSale, deleteBusinessSale }) {
 
   return (
     <Grid item xs={12}>
-      <Paper sx={{ p: 2, display: "flex", flexDirection: "column" }}>
+      <Paper
+        elevation={10}
+        sx={{ p: 2, display: "flex", flexDirection: "column" }}
+      >
         <Box
           sx={{
             display: "flex",

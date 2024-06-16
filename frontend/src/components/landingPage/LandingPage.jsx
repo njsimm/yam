@@ -16,32 +16,36 @@ export default function LandingPage() {
   }, [currentUser, navigate]);
 
   return (
-    <Box
+    <Grid
+      container
       component="section"
       id="landingPage"
       sx={{
         flexGrow: 1,
+        display: "flex",
+        flexDirection: "column",
+        height: "100%",
+        alignItems: "center",
       }}
     >
       <Grid
-        container
+        item
+        lg={12}
         sx={{
           display: "flex",
-          flexDirection: "column",
-          height: "100%",
-          alignItems: "center",
+          paddingTop: "12%",
+          width: "100%",
         }}
       >
         <Grid
           container
           sx={{
+            width: "100%",
             display: "flex",
-            textAlign: "center",
             flexDirection: "row",
-            paddingTop: "12%",
           }}
         >
-          <Grid item md={6} xs={12}>
+          <Grid item md={6} xs={12} sx={{ textAlign: "center" }}>
             <Typography variant="h1" component="h1" fontWeight="bold">
               yam
             </Typography>
@@ -51,40 +55,40 @@ export default function LandingPage() {
             item
             md={6}
             xs={12}
-            sx={{ display: "flex", justifyContent: "center" }}
+            sx={{ height: "100%", textAlign: "center", mt: 3 }}
           >
-            <Box
-              component="div"
-              sx={{
-                height: "100%",
-                display: "flex",
-                textAlign: "center",
-                maxWidth: 450,
-                marginTop: 2,
-              }}
-            >
+            <Box sx={{ maxWidth: "500px", margin: "0 auto" }}>
               <Typography variant="body1" paragraph>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Maiores
-                sequi temporibus excepturi perferendis tenetur quas provident
-                voluptates laudantium. Temporibus dolorem rerum animi enim cum
-                distinctio, velit sapiente laboriosam magnam voluptas. lore
+                yam was designed with artists, vendors, handmade crafters, and
+                small business owners in mind. It is a comprehensive platform
+                that allows you to efficiently manage and track inventory,
+                direct sales, business sales, SKU numbers, and more all in one
+                place.
               </Typography>
             </Box>
           </Grid>
         </Grid>
+      </Grid>
 
+      <Grid
+        item
+        lg={12}
+        sx={{
+          width: "100%",
+          marginTop: 5,
+        }}
+      >
         <Grid
           container
-          spacing={5}
           sx={{
+            width: "100%",
             display: "flex",
-            flexDirection: "row",
-            textAlign: "center",
-            // maxWidth: 300,
-            marginTop: 5,
+            justifyContent: { xs: "center", md: "flex-end" },
+            paddingRight: { md: 35 },
+            gap: 5,
           }}
         >
-          <Grid item md={6} xs={12}>
+          <Grid item>
             <Button
               variant="contained"
               color="primary"
@@ -94,7 +98,7 @@ export default function LandingPage() {
               Login
             </Button>
           </Grid>
-          <Grid item md={6} xs={12}>
+          <Grid item>
             <Button
               variant="contained"
               color="primary"
@@ -105,12 +109,21 @@ export default function LandingPage() {
             </Button>
           </Grid>
         </Grid>
+      </Grid>
+
+      <Grid
+        item
+        lg={12}
+        sx={{
+          width: "100%",
+          marginTop: 4,
+        }}
+      >
         <Grid
           container
           sx={{
-            display: "flex",
+            width: "100%",
             justifyContent: "center",
-            marginTop: 2,
           }}
         >
           <IconButton
@@ -126,6 +139,6 @@ export default function LandingPage() {
           </IconButton>
         </Grid>
       </Grid>
-    </Box>
+    </Grid>
   );
 }

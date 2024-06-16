@@ -12,6 +12,7 @@ import YamRoutes from "./components/routes/Routes";
 import useLocalStorage from "./hooks/useLocalStorage";
 import YamAPI from "./utils/YamApi";
 import UserContext from "./utils/UserContext";
+import { SidebarProvider } from "./utils/SidebarContext";
 
 /** The key name for storing JWT token in localStorage. The value for this key will be the JWT.
  *
@@ -304,26 +305,28 @@ function App() {
       <UserContext.Provider
         value={{ currentUser, setCurrentUser, mode, toggleTheme, logout }}
       >
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
-          <YamRoutes
-            login={login}
-            register={register}
-            createProduct={createProduct}
-            deleteProduct={deleteProduct}
-            createBusiness={createBusiness}
-            deleteBusiness={deleteBusiness}
-            updateBusiness={updateBusiness}
-            createSale={createSale}
-            deleteSale={deleteSale}
-            updateSale={updateSale}
-            createBusinessSale={createBusinessSale}
-            deleteBusinessSale={deleteBusinessSale}
-            updateBusinessSale={updateBusinessSale}
-            updateUser={updateUser}
-            deleteUser={deleteUser}
-          />
-        </ThemeProvider>
+        <SidebarProvider>
+          <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <YamRoutes
+              login={login}
+              register={register}
+              createProduct={createProduct}
+              deleteProduct={deleteProduct}
+              createBusiness={createBusiness}
+              deleteBusiness={deleteBusiness}
+              updateBusiness={updateBusiness}
+              createSale={createSale}
+              deleteSale={deleteSale}
+              updateSale={updateSale}
+              createBusinessSale={createBusinessSale}
+              deleteBusinessSale={deleteBusinessSale}
+              updateBusinessSale={updateBusinessSale}
+              updateUser={updateUser}
+              deleteUser={deleteUser}
+            />
+          </ThemeProvider>
+        </SidebarProvider>
       </UserContext.Provider>
     </BrowserRouter>
   );

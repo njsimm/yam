@@ -44,7 +44,7 @@ export default function ChangePasswordForm({ updateUser }) {
           alignItems: "center",
         }}
       >
-        <Paper sx={{ p: 3 }}>
+        <Paper elevation={10} sx={{ p: 3 }}>
           <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
             <LockOutlinedIcon />
           </Avatar>

@@ -81,7 +81,7 @@ export default function Sales() {
         </Table>
       </Box>
       <Button
-        variant="outlined"
+        variant="contained"
         color="primary"
         sx={{ mt: 3 }}
         component={Link}

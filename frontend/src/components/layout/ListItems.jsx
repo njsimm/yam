@@ -1,13 +1,14 @@
 import React, { useContext } from "react";
+import ColorLensIcon from "@mui/icons-material/ColorLens";
+import StorefrontIcon from "@mui/icons-material/Storefront";
+import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import LogoutIcon from "@mui/icons-material/Logout";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import ListSubheader from "@mui/material/ListSubheader";
 import DashboardIcon from "@mui/icons-material/Dashboard";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import PeopleIcon from "@mui/icons-material/People";
-import BarChartIcon from "@mui/icons-material/BarChart";
-import AssignmentIcon from "@mui/icons-material/Assignment";
 import UserContext from "../../utils/UserContext";
 import { useNavigate } from "react-router-dom";
 
@@ -28,25 +29,25 @@ export const mainListItems = () => {
       </ListItemButton>
       <ListItemButton onClick={() => navigate(`/users/${userId}/products`)}>
         <ListItemIcon>
-          <ShoppingCartIcon />
+          <ColorLensIcon />
         </ListItemIcon>
         <ListItemText primary="Products" />
       </ListItemButton>
       <ListItemButton onClick={() => navigate(`/users/${userId}/businesses`)}>
         <ListItemIcon>
-          <PeopleIcon />
+          <StorefrontIcon />
         </ListItemIcon>
         <ListItemText primary="Businesses" />
       </ListItemButton>
       <ListItemButton onClick={() => navigate(`/users/${userId}/sales`)}>
         <ListItemIcon>
-          <BarChartIcon />
+          <MonetizationOnIcon />
         </ListItemIcon>
         <ListItemText primary="Sales" />
       </ListItemButton>
       <ListItemButton onClick={() => navigate(`/users/${userId}/profile`)}>
         <ListItemIcon>
-          <BarChartIcon />
+          <AccountCircleIcon />
         </ListItemIcon>
         <ListItemText primary="Profile" />
       </ListItemButton>
@@ -67,7 +68,7 @@ export const secondaryListItems = () => {
     <React.Fragment>
       <ListItemButton onClick={handleLogout}>
         <ListItemIcon>
-          <AssignmentIcon />
+          <LogoutIcon />
         </ListItemIcon>
         <ListItemText primary="Logout" />
       </ListItemButton>

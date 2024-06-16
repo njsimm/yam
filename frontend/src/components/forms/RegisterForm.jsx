@@ -174,18 +174,15 @@ export default function RegisterForm({ register }) {
               >
                 Register
               </Button>
-              <Grid container justifyContent="center">
-                <Grid item>
-                  <Button
-                    variant="outlined"
-                    color="primary"
-                    component={Link}
-                    to="/users/login"
-                  >
-                    Already have an account? Login
-                  </Button>
-                </Grid>
-              </Grid>
+              <Button
+                variant="contained"
+                color="primary"
+                component={Link}
+                to="/users/login"
+                sx={{ justifyContent: "center", width: "100%" }}
+              >
+                Already have an account? Login
+              </Button>
             </Form>
           )}
         </Formik>

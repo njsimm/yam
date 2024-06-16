@@ -97,7 +97,7 @@ const ProductsItemPage = () => {
   return (
     <ProtectedLayout title="Product Details">
       <Container>
-        <Paper sx={{ p: 2 }}>
+        <Paper elevation={10} sx={{ p: 2 }}>
           {editMode ? (
             <ProductUpdateForm
               product={product}

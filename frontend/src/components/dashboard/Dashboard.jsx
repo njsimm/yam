@@ -13,6 +13,7 @@ export default function Dashboard() {
         {/* Chart */}
         <Grid item xs={12} md={8} lg={9}>
           <Paper
+            elevation={10}
             sx={{
               p: 2,
               display: "flex",
@@ -26,6 +27,7 @@ export default function Dashboard() {
         {/* Total Sales */}
         <Grid item xs={12} md={4} lg={3}>
           <Paper
+            elevation={10}
             sx={{
               p: 2,
               display: "flex",
@@ -38,7 +40,10 @@ export default function Dashboard() {
         </Grid>
         {/* Recent Sales */}
         <Grid item xs={12}>
-          <Paper sx={{ p: 2, display: "flex", flexDirection: "column" }}>
+          <Paper
+            elevation={10}
+            sx={{ p: 2, display: "flex", flexDirection: "column" }}
+          >
             <Sales />
           </Paper>
         </Grid>

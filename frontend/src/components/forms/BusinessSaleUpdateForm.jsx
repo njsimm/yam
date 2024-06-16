@@ -116,7 +116,7 @@ const BusinessSaleUpdateForm = ({ updateBusinessSale }) => {
 
   return (
     <Container component="main" maxWidth="sm">
-      <Paper sx={{ p: 3, mt: 3 }}>
+      <Paper elevation={10} sx={{ p: 3, mt: 3 }}>
         <Box
           sx={{
             display: "flex",

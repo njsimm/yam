@@ -108,18 +108,15 @@ export default function LoginForm({ login }) {
               >
                 Login
               </Button>
-              <Grid container sx={{ justifyContent: "center" }}>
-                <Grid item>
-                  <Button
-                    variant="outlined"
-                    color="primary"
-                    component={Link}
-                    to="/users/register"
-                  >
-                    Don't have an account? Register
-                  </Button>
-                </Grid>
-              </Grid>
+              <Button
+                variant="contained"
+                color="primary"
+                component={Link}
+                to="/users/register"
+                sx={{ justifyContent: "center", width: "100%" }}
+              >
+                Don't have an account? Register
+              </Button>
             </Form>
           )}
         </Formik>
