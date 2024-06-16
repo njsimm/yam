@@ -4,7 +4,7 @@ import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import TotalMoney from "./TotalMoney";
 import Sales from "./Sales";
-// import Chart from "./Chart";
+import Chart from "./Chart";
 
 export default function Dashboard() {
   return (
@@ -20,7 +20,7 @@ export default function Dashboard() {
               height: 240,
             }}
           >
-            {/* <Chart /> */}
+            <Chart />
           </Paper>
         </Grid>
         {/* Total Sales */}

@@ -23,7 +23,9 @@ export default function SalesList({ deleteSale, deleteBusinessSale }) {
         try {
           let sales = await YamAPI.getAllSalesInfo(currentUser.id);
           console.log("Fetched sales:", sales);
-          setSalesData(sales);
+          setSalesData(
+            sales.sort((a, b) => new Date(b.saleDate) - new Date(a.saleDate))
+          );
         } catch (err) {
           console.error("Sales fetchSales: problem loading sales", err);
         }
@@ -36,7 +38,8 @@ export default function SalesList({ deleteSale, deleteBusinessSale }) {
     saleId,
     businessSaleId,
     businessId,
-    productId
+    productId,
+    quantitySold
   ) => {
     console.log(
       "Deleting sale with Sale ID:",
@@ -52,6 +55,16 @@ export default function SalesList({ deleteSale, deleteBusinessSale }) {
     if (businessSaleId) {
       response = await deleteBusinessSale(businessId, businessSaleId);
     } else {
+      // Fetch the current product details
+      const product = await YamAPI.getProductById(currentUser.id, productId);
+      const newQuantity = product.quantity + quantitySold;
+
+      // Update product quantity
+      await YamAPI.updateProduct(currentUser.id, productId, {
+        quantity: newQuantity,
+      });
+
+      // Delete the sale
       response = await deleteSale(productId, saleId);
     }
     if (response.success) {
@@ -170,7 +183,8 @@ export default function SalesList({ deleteSale, deleteBusinessSale }) {
                               sale.saleId,
                               sale.businessSaleId,
                               sale.businessId,
-                              sale.productId
+                              sale.productId,
+                              sale.quantitySold
                             )
                           }
                           size="small"

@@ -17,6 +17,7 @@ import YamAPI from "../../utils/YamApi";
 
 const SaleSchema = Yup.object().shape({
   quantitySold: Yup.number()
+    .integer("Quantity sold must be a whole number")
     .min(1, "Quantity sold must be at least 1")
     .required("Quantity sold is required"),
   salePrice: Yup.number()
@@ -50,6 +51,7 @@ const SalesUpdateForm = ({ updateSale }) => {
     salePrice: "",
     saleDate: "",
   });
+  const [oldQuantity, setOldQuantity] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
   const { currentUser } = useContext(UserContext);
@@ -71,6 +73,7 @@ const SalesUpdateForm = ({ updateSale }) => {
             salePrice: sale.salePrice || "",
             saleDate: formatDateForInput(sale.saleDate) || "",
           });
+          setOldQuantity(sale.quantitySold);
         } catch (err) {
           console.error("SalesUpdateForm fetchSale: problem loading sale", err);
           setErrorMessage(`Error fetching sale: ${err.message}`);
@@ -114,17 +117,45 @@ const SalesUpdateForm = ({ updateSale }) => {
             enableReinitialize
             initialValues={initialValues}
             validationSchema={SaleSchema}
-            onSubmit={(values, { setSubmitting }) => {
+            onSubmit={async (values, { setSubmitting }) => {
               setSubmitting(true);
               setErrorMessage("");
 
               const updatedValues = {
                 ...values,
+                quantitySold: Number(values.quantitySold),
                 salePrice: Number(values.salePrice),
                 saleDate: formatDateForApi(values.saleDate),
               };
 
-              updateSale(productId, saleId, updatedValues).then((response) => {
+              try {
+                const product = await YamAPI.getProductById(
+                  currentUser.id,
+                  productId
+                );
+                const quantityDifference =
+                  updatedValues.quantitySold - oldQuantity;
+                const newQuantity = product.quantity - quantityDifference;
+
+                // Check if the new quantity exceeds the current inventory
+                if (newQuantity < 0) {
+                  setErrorMessage(
+                    "The updated quantity exceeds the current inventory."
+                  );
+                  setSubmitting(false);
+                  return;
+                }
+
+                // Update product quantity
+                await YamAPI.updateProduct(currentUser.id, productId, {
+                  quantity: newQuantity,
+                });
+
+                const response = await updateSale(
+                  productId,
+                  saleId,
+                  updatedValues
+                );
                 setSubmitting(false);
                 if (response.success) {
                   navigate(`/users/${currentUser.id}/sales`);
@@ -135,7 +166,13 @@ const SalesUpdateForm = ({ updateSale }) => {
                       : "Failed to update sale. Please check your inputs and try again.";
                   setErrorMessage(errorMsg);
                 }
-              });
+              } catch (error) {
+                console.error("Failed to update sale and product", error);
+                setErrorMessage(
+                  "Failed to update sale and product. Please try again."
+                );
+                setSubmitting(false);
+              }
             }}
           >
             {({
@@ -153,11 +190,13 @@ const SalesUpdateForm = ({ updateSale }) => {
                   id="quantitySold"
                   label="Quantity Sold"
                   name="quantitySold"
+                  type="number"
                   onChange={handleChange}
                   onBlur={handleBlur}
                   value={values.quantitySold}
                   error={touched.quantitySold && Boolean(errors.quantitySold)}
                   helperText={touched.quantitySold && errors.quantitySold}
+                  inputProps={{ step: 1 }}
                 />
                 <TextField
                   margin="normal"
@@ -165,6 +204,7 @@ const SalesUpdateForm = ({ updateSale }) => {
                   id="salePrice"
                   label="Sale Price"
                   name="salePrice"
+                  type="number"
                   onChange={handleChange}
                   onBlur={handleBlur}
                   value={values.salePrice}

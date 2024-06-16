@@ -24,6 +24,18 @@ const convertToISODate = (date) => {
   return isoDate.toISOString();
 };
 
+// Helper function to format date and time for input field
+const formatDateTimeForInput = (date) => {
+  const pad = (num) => num.toString().padStart(2, "0");
+  const year = date.getFullYear();
+  const month = pad(date.getMonth() + 1); // Months are zero-indexed
+  const day = pad(date.getDate());
+  const hours = pad(date.getHours());
+  const minutes = pad(date.getMinutes());
+
+  return `${year}-${month}-${day}T${hours}:${minutes}`;
+};
+
 const SaleSchema = Yup.object().shape({
   productId: Yup.number().required("Product is required"),
   quantitySold: Yup.number()
@@ -43,6 +55,7 @@ const SaleNewForm = ({ createSale, createBusinessSale }) => {
   const [errorMessage, setErrorMessage] = useState("");
   const [businesses, setBusinesses] = useState([]);
   const [products, setProducts] = useState([]);
+  const [SelectedProductPrice, setSelectedProductPrice] = useState(null);
   const navigate = useNavigate();
   const { currentUser } = useContext(UserContext);
 
@@ -84,43 +97,70 @@ const SaleNewForm = ({ createSale, createBusinessSale }) => {
             initialValues={{
               productId: "",
               quantitySold: 1,
-              salePrice: 0,
-              saleDate: "",
+              salePrice: SelectedProductPrice || 0,
+              saleDate: formatDateTimeForInput(new Date()), // Set default to current date and time
               businessId: "",
               businessPercentage: 0,
               isBusinessSale: false,
             }}
             validationSchema={SaleSchema}
-            onSubmit={(values, { setSubmitting }) => {
+            onSubmit={async (values, { setSubmitting }) => {
               setSubmitting(true);
               setErrorMessage("");
 
               const saleData = {
                 productId: values.productId,
                 quantitySold: values.quantitySold,
-                salePrice: values.salePrice,
+                salePrice: Number(values.salePrice), // Convert to number
                 saleDate: convertToISODate(values.saleDate), // Convert date to ISO format
               };
 
-              const handleSale = values.isBusinessSale
-                ? createBusinessSale(values.businessId, {
-                    ...saleData,
-                    businessPercentage: values.businessPercentage,
-                  })
-                : createSale(values.productId, saleData);
+              try {
+                const handleSale = values.isBusinessSale
+                  ? await createBusinessSale(values.businessId, {
+                      ...saleData,
+                      businessPercentage: values.businessPercentage,
+                    })
+                  : await createSale(values.productId, saleData);
 
-              handleSale.then((response) => {
-                setSubmitting(false);
-                if (response.success) {
+                if (handleSale.success) {
+                  if (!values.isBusinessSale) {
+                    // Fetch the current product details
+                    const product = await YamAPI.getProductById(
+                      currentUser.id,
+                      values.productId
+                    );
+                    const newQuantity = product.quantity - values.quantitySold;
+
+                    // Update product quantity
+                    await YamAPI.updateProduct(
+                      currentUser.id,
+                      values.productId,
+                      {
+                        quantity: newQuantity,
+                      }
+                    );
+                  }
                   navigate(`/users/${currentUser.id}/sales`);
                 } else {
                   const errorMsg =
-                    Array.isArray(response.errors) && response.errors.length > 0
-                      ? response.errors.join(", ")
+                    Array.isArray(handleSale.errors) &&
+                    handleSale.errors.length > 0
+                      ? handleSale.errors.join(", ")
                       : "Failed to create sale. Please check your inputs and try again.";
                   setErrorMessage(errorMsg);
                 }
-              });
+              } catch (error) {
+                console.error(
+                  "Failed to create sale and update product",
+                  error
+                );
+                setErrorMessage(
+                  "Failed to create sale and update product. Please try again."
+                );
+              } finally {
+                setSubmitting(false);
+              }
             }}
           >
             {({
@@ -129,8 +169,8 @@ const SaleNewForm = ({ createSale, createBusinessSale }) => {
               touched,
               handleChange,
               handleBlur,
-              isSubmitting,
               setFieldValue,
+              isSubmitting,
             }) => (
               <Form>
                 <Select
@@ -138,7 +178,18 @@ const SaleNewForm = ({ createSale, createBusinessSale }) => {
                   id="productId"
                   name="productId"
                   value={values.productId}
-                  onChange={handleChange}
+                  onChange={async (e) => {
+                    handleChange(e);
+                    const productId = e.target.value;
+                    if (productId) {
+                      const product = await YamAPI.getProductById(
+                        currentUser.id,
+                        productId
+                      );
+                      setSelectedProductPrice(product.price);
+                      setFieldValue("salePrice", product.price);
+                    }
+                  }}
                   onBlur={handleBlur}
                   error={touched.productId && Boolean(errors.productId)}
                   displayEmpty
