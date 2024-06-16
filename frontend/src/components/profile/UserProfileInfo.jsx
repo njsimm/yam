@@ -151,12 +151,12 @@ const UserProfileInfo = ({ updateUser, deleteUser }) => {
           <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}>
             {isEditing ? (
               <>
-                <Button variant="outlined" color="primary" type="submit">
+                <Button variant="contained" color="primary" type="submit">
                   Save
                 </Button>
                 <Button
-                  variant="outlined"
-                  color="secondary"
+                  variant="contained"
+                  color="primary"
                   onClick={handleCancelClick}
                 >
                   Cancel
@@ -165,14 +165,14 @@ const UserProfileInfo = ({ updateUser, deleteUser }) => {
             ) : (
               <>
                 <Button
-                  variant="outlined"
+                  variant="contained"
                   color="primary"
                   onClick={handleEditClick}
                 >
                   Edit
                 </Button>
                 <Button
-                  variant="outlined"
+                  variant="contained"
                   color="error"
                   onClick={handleClickOpen}
                 >

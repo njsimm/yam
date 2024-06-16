@@ -49,6 +49,9 @@ export default function LandingPage() {
             <Typography variant="h1" component="h1" fontWeight="bold">
               yam
             </Typography>
+            <Typography variant="h5" component="p">
+              your. art. matters.
+            </Typography>
           </Grid>
 
           <Grid

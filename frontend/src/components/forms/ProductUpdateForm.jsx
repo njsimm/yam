@@ -170,7 +170,7 @@ export default function ProductUpdateForm({
                 >
                   Save
                 </Button>
-                <Button variant="outlined" color="secondary" onClick={onCancel}>
+                <Button variant="contained" color="primary" onClick={onCancel}>
                   Cancel
                 </Button>
               </Box>

@@ -65,7 +65,7 @@ export default function BusinessesList({ deleteBusiness }) {
         >
           <Title>Businesses List</Title>
           <Button
-            variant="outlined"
+            variant="contained"
             color="primary"
             component={Link}
             to="/businesses/add-business"
@@ -96,7 +96,7 @@ export default function BusinessesList({ deleteBusiness }) {
                       sx={{ display: "flex", justifyContent: "center", gap: 1 }}
                     >
                       <Button
-                        variant="outlined"
+                        variant="contained"
                         color="primary"
                         component={Link}
                         to={`/businesses/${business.id}/update`}
@@ -105,7 +105,7 @@ export default function BusinessesList({ deleteBusiness }) {
                         Edit
                       </Button>
                       <Button
-                        variant="outlined"
+                        variant="contained"
                         color="primary"
                         onClick={() => handleDelete(business.id)}
                         size="small"

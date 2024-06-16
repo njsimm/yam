@@ -111,7 +111,7 @@ export default function SalesList({ deleteSale, deleteBusinessSale }) {
         >
           <Title>Sales List</Title>
           <Button
-            variant="outlined"
+            variant="contained"
             color="primary"
             component={Link}
             to="/sales/add-sale"
@@ -166,7 +166,7 @@ export default function SalesList({ deleteSale, deleteBusinessSale }) {
                         }}
                       >
                         <Button
-                          variant="outlined"
+                          variant="contained"
                           color="primary"
                           component={Link}
                           to={
@@ -179,7 +179,7 @@ export default function SalesList({ deleteSale, deleteBusinessSale }) {
                           Edit
                         </Button>
                         <Button
-                          variant="outlined"
+                          variant="contained"
                           color="primary"
                           onClick={() =>
                             handleDelete(

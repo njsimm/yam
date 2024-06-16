@@ -254,7 +254,9 @@ const SaleNewForm = ({ createSale, createBusinessSale }) => {
                       checked={values.isBusinessSale}
                       onChange={(e) => {
                         handleChange(e);
-                        if (!e.target.checked) {
+                        if (e.target.checked && businesses.length > 0) {
+                          setFieldValue("businessId", businesses[0].id);
+                        } else {
                           setFieldValue("businessId", "");
                           setFieldValue("businessPercentage", 0);
                         }
@@ -304,7 +306,7 @@ const SaleNewForm = ({ createSale, createBusinessSale }) => {
                     />
                     <Button
                       fullWidth
-                      variant="outlined"
+                      variant="contained"
                       color="primary"
                       onClick={() => navigate(`/businesses/add-business`)}
                       sx={{ mt: 2 }}
@@ -325,8 +327,8 @@ const SaleNewForm = ({ createSale, createBusinessSale }) => {
                 </Button>
                 <Button
                   fullWidth
-                  variant="outlined"
-                  color="secondary"
+                  variant="contained"
+                  color="primary"
                   sx={{ mb: 2 }}
                   onClick={() => navigate(-1)}
                 >

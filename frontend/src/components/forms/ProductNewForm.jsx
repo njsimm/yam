@@ -194,8 +194,8 @@ const ProductNewForm = ({ createProduct }) => {
                 </Button>
                 <Button
                   fullWidth
-                  variant="outlined"
-                  color="secondary"
+                  variant="contained"
+                  color="primary"
                   sx={{ mb: 2 }}
                   onClick={() => navigate(-1)}
                 >

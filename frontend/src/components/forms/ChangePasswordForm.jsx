@@ -155,6 +155,7 @@ export default function ChangePasswordForm({ updateUser }) {
                     type="submit"
                     fullWidth
                     variant="contained"
+                    color="error"
                     sx={{ mt: 3, mb: 2 }}
                     disabled={isSubmitting}
                   >
@@ -162,7 +163,7 @@ export default function ChangePasswordForm({ updateUser }) {
                   </Button>
                   <Button
                     fullWidth
-                    variant="outlined"
+                    variant="contained"
                     sx={{ mt: 3, mb: 2 }}
                     onClick={() => navigate(-1)}
                   >

@@ -83,7 +83,7 @@ const ProductsItemPage = () => {
       <ProtectedLayout title="Product Details">
         <Typography variant="h6">Product not found</Typography>
         <Button
-          variant="outlined"
+          variant="contained"
           color="primary"
           onClick={handleBackClick}
           sx={{ mt: 2 }}
@@ -141,7 +141,7 @@ const ProductsItemPage = () => {
                 Quantity Updated At: {formatDate(product.quantityUpdatedAt)}
               </Typography>
               <Button
-                variant="outlined"
+                variant="contained"
                 color="primary"
                 onClick={handleEditClick}
                 sx={{ mt: 2 }}
@@ -149,7 +149,7 @@ const ProductsItemPage = () => {
                 Edit
               </Button>
               <Button
-                variant="outlined"
+                variant="contained"
                 color="primary"
                 onClick={handleBackClick}
                 sx={{ mt: 2, ml: 2 }}
