@@ -13,6 +13,9 @@ import Container from "@mui/material/Container";
 import Alert from "@mui/material/Alert";
 import UserContext from "../../utils/UserContext";
 
+const noSpacesOrUppercase = (value) =>
+  !/\s/.test(value) && value === value.toLowerCase();
+
 const RegisterSchema = Yup.object().shape({
   firstName: Yup.string()
     .min(1, "First name must be at least 1 character")
@@ -22,11 +25,23 @@ const RegisterSchema = Yup.object().shape({
     .min(1, "Last name must be at least 1 character")
     .max(100, "Last name must be at most 100 characters")
     .required("Last name is required"),
-  email: Yup.string().email("Invalid email").required("Email is required"),
+  email: Yup.string()
+    .email("Invalid email")
+    .required("Email is required")
+    .test(
+      "no-spaces-or-uppercase",
+      "Email cannot contain spaces or uppercase letters",
+      noSpacesOrUppercase
+    ),
   username: Yup.string()
     .min(3, "Username must be at least 3 characters")
     .max(50, "Username must be at most 50 characters")
-    .required("Username is required"),
+    .required("Username is required")
+    .test(
+      "no-spaces-or-uppercase",
+      "Username cannot contain spaces or uppercase letters",
+      noSpacesOrUppercase
+    ),
   password: Yup.string()
     .min(5, "Password must be at least 5 characters")
     .max(72, "Password must be at most 72 characters")
@@ -76,7 +91,13 @@ export default function RegisterForm({ register }) {
           validationSchema={RegisterSchema}
           onSubmit={async (values, { setSubmitting }) => {
             setErrorMessage("");
-            let response = await register(values);
+            // Convert email and username to lowercase and remove spaces
+            const sanitizedValues = {
+              ...values,
+              email: values.email.toLowerCase().replace(/\s/g, ""),
+              username: values.username.toLowerCase().replace(/\s/g, ""),
+            };
+            let response = await register(sanitizedValues);
             setSubmitting(false);
             if (response.success) {
               navigate("/users/dashboard");

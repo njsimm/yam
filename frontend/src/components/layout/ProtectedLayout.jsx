@@ -13,6 +13,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import WbSunnyRoundedIcon from "@mui/icons-material/WbSunnyRounded";
 import ModeNightRoundedIcon from "@mui/icons-material/ModeNightRounded";
+import { Navigate } from "react-router-dom";
 import { mainListItems, secondaryListItems } from "./ListItems";
 import UserContext from "../../utils/UserContext";
 import SidebarContext from "../../utils/SidebarContext";
@@ -65,8 +66,15 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 const ProtectedLayout = ({ children, title }) => {
-  const { mode, toggleTheme } = useContext(UserContext);
+  const { currentUser, mode, toggleTheme } = useContext(UserContext);
   const { isSidebarOpen, toggleSidebar } = useContext(SidebarContext);
+
+  if (!currentUser) {
+    return <Navigate to="/users/login" />;
+  }
+
+  const yamIcon =
+    mode === "dark" ? "/96px-yellow-yam-icon.png" : "/96px-purple-yam-icon.png";
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -88,6 +96,11 @@ const ProtectedLayout = ({ children, title }) => {
           >
             <MenuIcon />
           </IconButton>
+          <img
+            src={yamIcon}
+            alt="Yam Icon"
+            style={{ width: "32px", marginRight: "12px" }}
+          />
           <Typography
             component="h1"
             variant="h6"
