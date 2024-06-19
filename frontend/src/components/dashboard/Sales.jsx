@@ -22,7 +22,7 @@ export default function Sales() {
           let sales = await YamAPI.getAllSalesInfo(currentUser.id);
           setSalesData(sales);
         } catch (err) {
-          console.error("Sales fetchSales: problem loading sales", err);
+          console.error("Problem loading sales");
         }
       }
     }

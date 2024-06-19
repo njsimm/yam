@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -24,10 +24,7 @@ export default function ProductsList({ deleteProduct }) {
           let products = await YamAPI.getAllProducts(currentUser.id);
           setProductsData(products);
         } catch (err) {
-          console.error(
-            "Products fetchProducts: problem loading products",
-            err
-          );
+          console.error("Problem loading products");
         }
       }
     }
@@ -41,7 +38,7 @@ export default function ProductsList({ deleteProduct }) {
         productsData.filter((product) => product.id !== productId)
       );
     } else {
-      console.error("Failed to delete product:", response.errors);
+      console.error("Failed to delete product");
     }
   };
 

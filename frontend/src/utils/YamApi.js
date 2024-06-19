@@ -39,8 +39,6 @@ class YamAPI {
    * const newUser = await YamApi.request('users/register', { username: 'abc', password: '123' }, 'post');
    */
   static async request(endpoint, data = {}, method = "get") {
-    console.debug("API Call:", endpoint, data, method);
-
     const url = `${BASE_URL}/${endpoint}`;
     const headers = { Authorization: `Bearer ${YamAPI.token}` };
     const params = method === "get" ? data : {};
@@ -48,7 +46,6 @@ class YamAPI {
     try {
       return (await axios({ url, method, data, params, headers })).data;
     } catch (error) {
-      console.error("API Error:", error.response);
       let message = error.response.data.error.message;
       throw Array.isArray(message) ? message : [message];
     }
@@ -196,15 +193,6 @@ class YamAPI {
     );
   }
 
-  /** static async getAllSalesInfo
-   *
-   * Retrieves all sales information for a given user.
-   */
-  static async getAllSalesInfo(userId) {
-    const response = await this.request(`users/${userId}/allSalesInfo`);
-    return response.sales;
-  }
-
   /** static async createSale
    *
    * Creates a new sale.
@@ -338,8 +326,10 @@ class YamAPI {
    *
    * Retrieves all business sales for a given business.
    */
-  static async getAllBusinesses(userId) {
-    const response = await this.request(`users/${userId}/businesses`);
+  static async getAllBusinessSales(businessId) {
+    const response = await this.request(
+      `businesses/${businessId}/businessSales`
+    );
     return response.businesses;
   }
 

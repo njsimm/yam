@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import { useState, useContext, useEffect } from "react";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import {
@@ -69,12 +69,6 @@ const BusinessSaleUpdateForm = ({ updateBusinessSale }) => {
     async function fetchBusinessSale() {
       if (currentUser && businessId && businessSaleId) {
         try {
-          console.log(
-            "Fetching business sale with businessId:",
-            businessId,
-            "businessSaleId:",
-            businessSaleId
-          );
           const businessSale = await YamAPI.getBusinessSaleById(
             businessId,
             businessSaleId
@@ -91,10 +85,6 @@ const BusinessSaleUpdateForm = ({ updateBusinessSale }) => {
           const userBusinesses = await YamAPI.getAllBusinesses(currentUser.id);
           setBusinesses(userBusinesses);
         } catch (err) {
-          console.error(
-            "BusinessSaleUpdateForm fetchBusinessSale: problem loading business sale",
-            err
-          );
           setErrorMessage(`Error fetching business sale: ${err.message}`);
         } finally {
           setIsLoading(false);

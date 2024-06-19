@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -24,10 +24,7 @@ export default function BusinessesList({ deleteBusiness }) {
           let businesses = await YamAPI.getAllBusinesses(currentUser.id);
           setBusinessesData(businesses);
         } catch (err) {
-          console.error(
-            "Businesses fetchBusinesses: problem loading businesses",
-            err
-          );
+          console.error("Problem loading businesses");
         }
       }
     }
@@ -41,7 +38,7 @@ export default function BusinessesList({ deleteBusiness }) {
         businessesData.filter((business) => business.id !== businessId)
       );
     } else {
-      console.error("Failed to delete business:", response.errors);
+      console.error("Failed to delete business:");
     }
   };
 

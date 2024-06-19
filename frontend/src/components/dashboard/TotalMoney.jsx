@@ -45,7 +45,7 @@ export default function TotalMoney() {
             setSelectedYear("All");
           }
         } catch (err) {
-          console.error("TotalMoney fetchSales: problem loading sales", err);
+          console.error("Problem loading information");
         }
       }
     }

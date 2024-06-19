@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
   Container,
@@ -29,7 +29,6 @@ const ProductsItemPage = () => {
         setProduct(product);
         setLoading(false);
       } catch (err) {
-        console.error("Product fetchProduct: problem loading product", err);
         setLoading(false);
       }
     }
@@ -56,7 +55,6 @@ const ProductsItemPage = () => {
       setEditMode(false);
       setErrorMessage(""); // Clear error message on successful save
     } catch (err) {
-      console.error("Product updateProduct: problem updating product", err);
       setErrorMessage(
         "Error updating product: " +
           (err.response?.data?.message ||

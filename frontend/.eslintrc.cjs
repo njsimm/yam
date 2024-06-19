@@ -18,5 +18,6 @@ module.exports = {
       { allowConstantExport: true },
     ],
     "no-console": "warn", // This will warn for all console statements
+    "react/prop-types": "off", // This will disable prop-types check
   },
 };

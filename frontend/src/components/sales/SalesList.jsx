@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -22,12 +22,11 @@ export default function SalesList({ deleteSale, deleteBusinessSale }) {
       if (currentUser) {
         try {
           let sales = await YamAPI.getAllSalesInfo(currentUser.id);
-          console.log("Fetched sales:", sales);
           setSalesData(
             sales.sort((a, b) => new Date(b.saleDate) - new Date(a.saleDate))
           );
         } catch (err) {
-          console.error("Sales fetchSales: problem loading sales", err);
+          console.error("Problem loading sales");
         }
       }
     }
@@ -41,16 +40,6 @@ export default function SalesList({ deleteSale, deleteBusinessSale }) {
     productId,
     quantitySold
   ) => {
-    console.log(
-      "Deleting sale with Sale ID:",
-      saleId,
-      "Business Sale ID:",
-      businessSaleId,
-      "Business ID:",
-      businessId,
-      "Product ID:",
-      productId
-    );
     let response;
     if (businessSaleId) {
       response = await deleteBusinessSale(businessId, businessSaleId);
@@ -75,7 +64,7 @@ export default function SalesList({ deleteSale, deleteBusinessSale }) {
         )
       );
     } else {
-      console.error("Failed to delete sale:", response.errors);
+      console.error("Failed to delete sale");
     }
   };
 
@@ -136,7 +125,6 @@ export default function SalesList({ deleteSale, deleteBusinessSale }) {
             </TableHead>
             <TableBody>
               {salesData.map((sale, idx) => {
-                console.log("Sale data:", sale);
                 return (
                   <TableRow key={idx}>
                     <TableCell align="center">

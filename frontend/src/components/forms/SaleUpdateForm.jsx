@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import { useState, useContext, useEffect } from "react";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import {
@@ -61,12 +61,6 @@ const SalesUpdateForm = ({ updateSale }) => {
     async function fetchSale() {
       if (currentUser && productId && saleId) {
         try {
-          console.log(
-            "Fetching sale with productId:",
-            productId,
-            "saleId:",
-            saleId
-          );
           const sale = await YamAPI.getSaleById(productId, saleId);
           setInitialValues({
             quantitySold: sale.quantitySold || "",
@@ -75,7 +69,6 @@ const SalesUpdateForm = ({ updateSale }) => {
           });
           setOldQuantity(sale.quantitySold);
         } catch (err) {
-          console.error("SalesUpdateForm fetchSale: problem loading sale", err);
           setErrorMessage(`Error fetching sale: ${err.message}`);
         } finally {
           setIsLoading(false);
@@ -167,7 +160,6 @@ const SalesUpdateForm = ({ updateSale }) => {
                   setErrorMessage(errorMsg);
                 }
               } catch (error) {
-                console.error("Failed to update sale and product", error);
                 setErrorMessage(
                   "Failed to update sale and product. Please try again."
                 );

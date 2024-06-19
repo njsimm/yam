@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import { BarChart } from "@mui/x-charts/BarChart";
 import YamAPI from "../../utils/YamApi";
@@ -30,7 +30,6 @@ export default function Chart() {
       if (currentUser) {
         try {
           let sales = await YamAPI.getAllSalesInfo(currentUser.id);
-          console.log("Fetched sales:", sales);
 
           let yearlySales = {};
 
@@ -68,7 +67,7 @@ export default function Chart() {
             setSelectedYear(Object.keys(yearlySales)[0] || "");
           }
         } catch (err) {
-          console.error("Sales fetchSales: problem loading sales", err);
+          console.error("Problem loading sales");
         }
       }
     }

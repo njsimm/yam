@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import { useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
@@ -54,7 +54,7 @@ const UserProfileInfo = ({ updateUser, deleteUser }) => {
       setCurrentUser({ ...currentUser, ...formData });
       setIsEditing(false);
     } else {
-      console.error("Failed to update user:", response.errors);
+      console.error("Failed to update user");
     }
   };
 
@@ -63,7 +63,7 @@ const UserProfileInfo = ({ updateUser, deleteUser }) => {
     if (response.success) {
       navigate("/");
     } else {
-      console.error("Failed to delete user:", response.errors);
+      console.error("Failed to delete user");
     }
   };
 

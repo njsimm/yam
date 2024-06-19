@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import { useState, useContext, useEffect } from "react";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import {
@@ -46,10 +46,7 @@ const BusinessUpdateForm = ({ updateBusiness }) => {
             contactInfo: business.contactInfo || "",
           });
         } catch (err) {
-          console.error(
-            "BusinessUpdateForm fetchBusiness: problem loading business",
-            err
-          );
+          console.error("Problem loading business");
         } finally {
           setIsLoading(false);
         }

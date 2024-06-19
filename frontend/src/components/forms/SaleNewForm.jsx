@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import { useState, useContext, useEffect } from "react";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import {
@@ -68,7 +68,7 @@ const SaleNewForm = ({ createSale, createBusinessSale }) => {
           const userProducts = await YamAPI.getAllProducts(currentUser.id);
           setProducts(userProducts);
         } catch (err) {
-          console.error("Failed to fetch businesses and products", err);
+          console.error("Failed to get information");
         }
       }
     }
@@ -151,10 +151,6 @@ const SaleNewForm = ({ createSale, createBusinessSale }) => {
                   setErrorMessage(errorMsg);
                 }
               } catch (error) {
-                console.error(
-                  "Failed to create sale and update product",
-                  error
-                );
                 setErrorMessage(
                   "Failed to create sale and update product. Please try again."
                 );

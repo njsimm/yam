@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import {
   ThemeProvider,
   CssBaseline,
@@ -26,20 +26,8 @@ function App() {
   const [token, setToken] = useLocalStorage(TOKEN_STORAGE_ID);
   const [mode, setMode] = useLocalStorage("theme", "light");
 
-  console.debug(
-    "App",
-    "infoLoaded=",
-    infoLoaded,
-    "currentUser=",
-    currentUser,
-    "token=",
-    token
-  );
-
   useEffect(
     function loadUserInfo() {
-      console.debug("App useEffect loadUserInfo", "token=", token);
-
       async function getCurrentUser() {
         if (token) {
           try {
@@ -50,7 +38,6 @@ function App() {
             let currentUser = await YamAPI.getCurrentUser(id);
             setCurrentUser(currentUser);
           } catch (err) {
-            console.error("App loadUserInfo: problem loading", err);
             setCurrentUser(null);
           }
         }
@@ -78,7 +65,6 @@ function App() {
       setToken(token);
       return { success: true };
     } catch (errors) {
-      console.error("register failed", errors);
       return { success: false, errors };
     }
   }
@@ -92,7 +78,6 @@ function App() {
       setToken(token);
       return { success: true };
     } catch (errors) {
-      console.error("login failed", errors);
       return { success: false, errors };
     }
   }
@@ -106,7 +91,6 @@ function App() {
       await YamAPI.createProduct(currentUser.id, productData);
       return { success: true };
     } catch (errors) {
-      console.error("createProduct failed", errors);
       return { success: false, errors };
     }
   }
@@ -120,7 +104,6 @@ function App() {
       await YamAPI.deleteProduct(currentUser.id, productId);
       return { success: true };
     } catch (errors) {
-      console.error("deleteProduct failed", errors);
       return { success: false, errors };
     }
   }
@@ -134,7 +117,6 @@ function App() {
       await YamAPI.createBusiness(currentUser.id, businessData);
       return { success: true };
     } catch (errors) {
-      console.error("createBusiness failed", errors);
       return { success: false, errors };
     }
   }
@@ -148,7 +130,6 @@ function App() {
       await YamAPI.deleteBusiness(currentUser.id, businessId);
       return { success: true };
     } catch (errors) {
-      console.error("deleteBusiness failed", errors);
       return { success: false, errors };
     }
   }
@@ -162,7 +143,6 @@ function App() {
       await YamAPI.updateBusiness(currentUser.id, businessId, updateData);
       return { success: true };
     } catch (errors) {
-      console.error("updateBusiness failed", errors);
       return { success: false, errors };
     }
   }
@@ -176,7 +156,6 @@ function App() {
       await YamAPI.createSale(productId, saleData);
       return { success: true };
     } catch (errors) {
-      console.error("createSale failed", errors);
       return { success: false, errors };
     }
   }
@@ -190,7 +169,6 @@ function App() {
       await YamAPI.deleteSale(productId, saleId);
       return { success: true };
     } catch (errors) {
-      console.error("deleteSale failed", errors);
       return { success: false, errors };
     }
   }
@@ -204,7 +182,6 @@ function App() {
       await YamAPI.updateSale(productId, saleId, updateData);
       return { success: true };
     } catch (errors) {
-      console.error("updateSale failed", errors);
       return { success: false, errors };
     }
   }
@@ -218,7 +195,6 @@ function App() {
       await YamAPI.createBusinessSale(businessId, businessSaleData);
       return { success: true };
     } catch (errors) {
-      console.error("createBusinessSale failed", errors);
       return { success: false, errors };
     }
   }
@@ -232,7 +208,6 @@ function App() {
       await YamAPI.deleteBusinessSale(businessId, businessSaleId);
       return { success: true };
     } catch (errors) {
-      console.error("deleteBusinessSale failed", errors);
       return { success: false, errors };
     }
   }
@@ -246,7 +221,6 @@ function App() {
       await YamAPI.updateBusinessSale(businessId, businessSaleId, updateData);
       return { success: true };
     } catch (errors) {
-      console.error("updateBusinessSale failed", errors);
       return { success: false, errors };
     }
   }
@@ -260,7 +234,6 @@ function App() {
       await YamAPI.updateUser(currentUser.id, updateData);
       return { success: true };
     } catch (errors) {
-      console.error("updateUser failed", errors);
       return { success: false, errors };
     }
   }
@@ -275,7 +248,6 @@ function App() {
       logout();
       return { success: true };
     } catch (errors) {
-      console.error("deleteUser failed", errors);
       return { success: false, errors };
     }
   }
